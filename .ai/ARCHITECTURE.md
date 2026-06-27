@@ -1,0 +1,40 @@
+# Architecture
+
+## Current Structure
+
+The project uses a Python `src/` layout.
+
+## Packages
+
+- `core`: Future shared foundation primitives.
+- `domain`: Future domain concepts and rules.
+- `application`: Future use cases and orchestration.
+- `infrastructure`: Future external adapters and implementation details.
+- `interfaces`: Future input and output boundaries.
+
+## Sprint 02 Internal Flow
+
+The first internal flow is:
+
+1. User
+2. Application
+3. Core
+4. Response
+5. Interface
+
+The current implementation establishes:
+
+- `Request`: Unified request model in `core`.
+- `Response`: Unified response model in `core`.
+- `Application`: Initial application orchestrator.
+- `App`: Application bootstrap and execution entry point.
+
+## Sprint 02.5 Refinements
+
+- `Request.message` is the official user input field.
+- `Application.handle()` is the official application handler method.
+- `ConsoleInterface` is the console output boundary for rendering responses.
+
+## Rule
+
+Architecture must not be changed without approval from the Tech Leader.
