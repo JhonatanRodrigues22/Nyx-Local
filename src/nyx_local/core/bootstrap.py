@@ -1,0 +1,48 @@
+from __future__ import annotations
+
+from nyx_local.application.application import Application
+from nyx_local.core.app import App
+from nyx_local.core.registry import Registry
+from nyx_local.core.settings import Settings
+from nyx_local.interfaces import ConsoleInterface
+
+
+class Bootstrap:
+    """Initialize and shut down the Nyx Local application components."""
+
+    def __init__(self) -> None:
+        self.settings: Settings | None = None
+        self.registry: Registry | None = None
+        self.app: App | None = None
+
+    def initialize(self) -> App:
+        settings = Settings()
+        registry = Registry()
+        application = Application()
+        console = ConsoleInterface()
+
+        app = App(
+            application=application,
+            console=console,
+            registry=registry,
+            settings=settings,
+        )
+
+        registry.register("settings", settings)
+        registry.register("application", application)
+        registry.register("console", console)
+        registry.register("app", app)
+
+        self.settings = settings
+        self.registry = registry
+        self.app = app
+
+        return app
+
+    def shutdown(self) -> None:
+        if self.registry is not None:
+            self.registry.clear()
+
+        self.settings = None
+        self.registry = None
+        self.app = None

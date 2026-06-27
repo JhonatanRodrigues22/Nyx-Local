@@ -35,6 +35,23 @@ The current implementation establishes:
 - `Application.handle()` is the official application handler method.
 - `ConsoleInterface` is the console output boundary for rendering responses.
 
+## Sprint 03 Application Infrastructure
+
+The application initialization flow is:
+
+1. `main`
+2. `Bootstrap`
+3. `App`
+4. `Application`
+5. `ConsoleInterface`
+
+The current implementation establishes:
+
+- `Bootstrap`: Initializes settings, registry, application, console interface, and app.
+- `Settings`: Dataclass for current and future application configuration.
+- `Registry`: Simple component registry for bootstrap wiring.
+- `services`: Reserved package for future application services.
+
 ## Rule
 
 Architecture must not be changed without approval from the Tech Leader.

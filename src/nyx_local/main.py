@@ -1,13 +1,14 @@
 from nyx_local.core import Request
-from nyx_local.core.app import App
-from nyx_local.interfaces import ConsoleInterface
+from nyx_local.core.bootstrap import Bootstrap
 
 
 def main() -> None:
     """Run the minimal Nyx Local application flow."""
-    app = App()
-    console = ConsoleInterface()
-    request = Request(message="", origin="main")
-    response = app.run(request)
+    bootstrap = Bootstrap()
+    app = bootstrap.initialize()
 
-    console.render(response)
+    try:
+        request = Request(message="", origin="main")
+        app.run(request)
+    finally:
+        bootstrap.shutdown()

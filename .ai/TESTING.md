@@ -14,6 +14,9 @@ The project is prepared to use `pytest`.
 - `Response`
 - `Application`
 - `ConsoleInterface`
+- `Bootstrap`
+- `Registry`
+- `Settings`
 - Basic PR preparation script command generation
 
 ## Rule

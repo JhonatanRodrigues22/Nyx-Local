@@ -1,4 +1,4 @@
-from nyx_local.core import Response
+from nyx_local.core.models import Response
 
 
 class ConsoleInterface:
