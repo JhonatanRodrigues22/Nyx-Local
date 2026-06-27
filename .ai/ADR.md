@@ -31,3 +31,11 @@ Status: Accepted
 Decision: `Request.text` was renamed to `Request.message`, and `Application.process()` was renamed to `Application.handle()`.
 
 Reason: These names better represent conversation-oriented input and application request handling.
+
+## ADR-0005: Bootstrap, Settings, and Registry Foundation
+
+Status: Accepted
+
+Decision: Nyx Local uses a `Bootstrap` class to initialize application components, a `Settings` dataclass for application configuration defaults, and a simple `Registry` for component registration and lookup.
+
+Reason: This establishes a clear startup path for future capabilities without introducing AI, memory, skills, providers, databases, plugins, or external integrations.

@@ -16,6 +16,10 @@ Core foundation with the first internal request and response flow.
 
 Core refinement and Git/Pull Request preparation flow.
 
+## Sprint 03
+
+Bootstrap and application infrastructure with Settings, Registry, and Services structure.
+
 ## Next
 
 Await Tech Leader direction for the next Sprint.
