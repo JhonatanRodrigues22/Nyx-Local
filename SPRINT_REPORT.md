@@ -1,35 +1,44 @@
 # Sprint Report
 
-## Resumo da Sprint 03
+## Resumo da Sprint 04
 
-Sprint 03 criou a infraestrutura de inicialização da aplicação.
+Sprint 04 implementou a primeira fundação de memória persistente do Nyx Local.
 
-O fluxo atual é:
+Marco da Sprint:
 
-1. `main`
-2. `Bootstrap`
-3. `App`
-4. `Application`
-5. `ConsoleInterface`
+**First Memory** — A Nyx Local é capaz de lembrar informações entre diferentes execuções da aplicação.
 
-Nenhuma IA, LLM, memória, banco de dados, Skill, Provider, plugin, Obsidian ou integração foi implementada.
+Fluxo estabelecido:
+
+1. CLI
+2. `Application`
+3. `MemoryService`
+4. `MemoryProvider`
+5. `JsonMemoryProvider`
+6. `data/memory.json`
+
+Nenhuma IA, LLM, SQLite, ChromaDB, embeddings, busca semântica, memória vetorial, Obsidian, classificação automática, context window ou cache foi implementado.
 
 ## Arquivos Criados
 
-- `src/nyx_local/core/bootstrap.py`
-- `src/nyx_local/core/settings.py`
-- `src/nyx_local/core/registry.py`
-- `src/nyx_local/services/__init__.py`
-- `tests/test_bootstrap.py`
-- `tests/test_settings.py`
-- `tests/test_registry.py`
+- `src/nyx_local/domain/memory.py`
+- `src/nyx_local/infrastructure/memory_json.py`
+- `src/nyx_local/services/memory_service.py`
+- `data/memory.json`
+- `tests/test_memory.py`
 
 ## Arquivos Alterados
 
-- `src/nyx_local/core/app.py`
+- `src/nyx_local/application/application.py`
+- `src/nyx_local/core/bootstrap.py`
+- `src/nyx_local/core/settings.py`
 - `src/nyx_local/core/__init__.py`
-- `src/nyx_local/interfaces/console.py`
-- `src/nyx_local/main.py`
+- `src/nyx_local/domain/__init__.py`
+- `src/nyx_local/infrastructure/__init__.py`
+- `src/nyx_local/services/__init__.py`
+- `scripts/package_project.py`
+- `tests/test_bootstrap.py`
+- `tests/test_settings.py`
 - `.ai/ARCHITECTURE.md`
 - `.ai/ADR.md`
 - `.ai/PROJECT.md`
@@ -39,10 +48,10 @@ Nenhuma IA, LLM, memória, banco de dados, Skill, Provider, plugin, Obsidian ou 
 
 ## Atualizações na `.ai`
 
-- `ARCHITECTURE.md`: Registrada a infraestrutura de inicialização da Sprint 03.
-- `ADR.md`: Registrada a decisão sobre `Bootstrap`, `Settings` e `Registry`.
-- `PROJECT.md`: Atualizada a fase atual.
-- `ROADMAP.md`: Registrada a Sprint 03.
+- `ARCHITECTURE.md`: Registrada a arquitetura da memória persistente.
+- `ADR.md`: Registrada a decisão sobre abstração de provider e persistência JSON.
+- `PROJECT.md`: Atualizada a fase atual e restrições.
+- `ROADMAP.md`: Registrada a Sprint 04.
 - `TESTING.md`: Atualizado o foco dos testes mínimos.
 
 ## Testes Executados
@@ -60,7 +69,7 @@ Nenhuma IA, LLM, memória, banco de dados, Skill, Provider, plugin, Obsidian ou 
 
 Branch preparada:
 
-- `sprint-03-bootstrap-application-infrastructure`
+- `sprint-04-memory-foundation`
 
 O Pull Request deve ser criado contra `main` após commit e push da branch.
 
@@ -70,4 +79,5 @@ Nenhuma sugestão arquitetural nova identificada nesta Sprint.
 
 ## Riscos Encontrados
 
-Foi identificado e corrigido um risco de import circular ao exportar `Bootstrap` diretamente em `nyx_local.core`. A solução foi manter `Bootstrap` acessível pelo módulo explícito `nyx_local.core.bootstrap`, preservando o pacote `core` como export leve de modelos e primitivas.
+- O provider JSON aceita valores serializáveis em JSON. Validação avançada de tipos fica fora do escopo desta Sprint.
+- O arquivo `data/memory.json` nasce versionado com `{}` para estabelecer o local padrão de persistência.
