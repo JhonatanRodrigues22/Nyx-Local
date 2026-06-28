@@ -10,7 +10,7 @@ Nyx Local is a local-first Python project prepared for modular growth.
 
 ## Current Phase
 
-Bootstrap and application infrastructure.
+AI development framework documentation.
 
 ## Current Restrictions
 

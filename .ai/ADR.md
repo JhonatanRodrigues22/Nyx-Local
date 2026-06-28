@@ -39,3 +39,11 @@ Status: Accepted
 Decision: Nyx Local uses a `Bootstrap` class to initialize application components, a `Settings` dataclass for application configuration defaults, and a simple `Registry` for component registration and lookup.
 
 Reason: This establishes a clear startup path for future capabilities without introducing AI, memory, skills, providers, databases, plugins, or external integrations.
+
+## ADR-0006: AI Development Framework Documentation
+
+Status: Accepted
+
+Decision: Nyx Local maintains a dedicated AI development framework inside `.ai`, including onboarding, Sprint blueprint, architecture guide, code style, development rules, and review checklist documents.
+
+Reason: The project needs reusable institutional guidance so human and AI collaborators can contribute consistently without relying on external context.

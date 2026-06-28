@@ -20,6 +20,10 @@ Core refinement and Git/Pull Request preparation flow.
 
 Bootstrap and application infrastructure with Settings, Registry, and Services structure.
 
+## Meta Sprint
+
+AI development framework documentation for onboarding, Sprint planning, architecture guidance, code style, and Pull Request review.
+
 ## Next
 
 Await Tech Leader direction for the next Sprint.
