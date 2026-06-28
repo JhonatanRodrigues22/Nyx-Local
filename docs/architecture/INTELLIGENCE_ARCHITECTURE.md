@@ -217,7 +217,11 @@ Skills answer "how to execute".
 
 Pipeline answers "how to think".
 
-The current Skill architecture includes `Skill`, `SkillRegistry`, `SkillManager`, and `SkillResult` as preparation only. No executable user-facing Skill is implemented yet.
+The current Skill architecture includes an official runtime with Discovery,
+Registry, Resolver, Executor, Lifecycle, Context, Manifest, and Result models.
+No executable user-facing Skill is implemented yet.
+
+Detailed Skills documentation lives in `docs/architecture/SKILLS_ARCHITECTURE.md`.
 
 ## Integrating New Modules
 

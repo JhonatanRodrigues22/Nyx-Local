@@ -10,6 +10,14 @@ class MemorySettings:
 
 
 @dataclass(slots=True, frozen=True)
+class SkillSettings:
+    """Skill runtime settings prepared for future discovery sources."""
+
+    search_paths: tuple[str, ...] = ("skills",)
+    api_version: str = "1"
+
+
+@dataclass(slots=True, frozen=True)
 class Settings:
     """Application settings prepared for future configuration loading."""
 
@@ -17,3 +25,4 @@ class Settings:
     version: str = "0.1.0"
     debug: bool = False
     memory: MemorySettings = field(default_factory=MemorySettings)
+    skills: SkillSettings = field(default_factory=SkillSettings)

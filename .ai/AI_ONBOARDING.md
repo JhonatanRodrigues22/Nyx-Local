@@ -23,6 +23,7 @@ Nyx Local currently includes:
 - Request and Response models;
 - a JSON-backed persistent memory foundation;
 - a stage-based Intelligence Pipeline for pre-LLM reasoning;
+- a Skills Runtime foundation for future extensibility;
 - Git/Pull Request workflow support;
 - an `.ai` knowledge base for onboarding and governance.
 

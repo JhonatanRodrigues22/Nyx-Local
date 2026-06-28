@@ -44,8 +44,14 @@ Stage-based pre-LLM reasoning pipeline with context, result, stages, prompt comp
 
 Pipeline Builder, Stage Registry, stage metadata, initial Skills infrastructure, and lifecycle documentation.
 
+## Capability 05 - Extensibility Runtime
+
+Official Skills Runtime with discovery, registry, resolver, executor, lifecycle, manifest,
+context, standardized results, documentation, and tests.
+
 ## Next
 
 Await Tech Leader direction for the next capability Sprint.
 
-Future work may include richer local memory providers, user-facing interfaces, skills, providers, and AI integration only when approved by future Sprints.
+Future work may include richer local memory providers, user-facing interfaces, real Skills,
+providers, hot reload, plugin loading, and AI integration only when approved by future Sprints.

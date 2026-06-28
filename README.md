@@ -14,6 +14,7 @@ Nyx Local currently provides the foundation for a modular local application:
 - application Settings;
 - a JSON-backed persistent memory foundation;
 - an Intelligence Pipeline for pre-LLM reasoning;
+- a Skills Runtime foundation for future extensibility;
 - an official `.ai` knowledge base for future collaborators.
 
 ## Goals
@@ -37,6 +38,8 @@ Current implemented capabilities:
 - Application configuration through `Settings`.
 - Persistent key-value memory through `MemoryService` and `JsonMemoryProvider`.
 - Pre-LLM reasoning through `IntelligencePipeline`.
+- Extensibility runtime through `SkillDiscovery`, `SkillRegistry`, `SkillResolver`,
+  `SkillExecutor`, `SkillLifecycle`, `SkillManager`, and `SkillResult`.
 - AI collaboration documentation in `.ai`.
 
 Not implemented yet:
@@ -46,7 +49,7 @@ Not implemented yet:
 - Obsidian integration.
 - embeddings or vector memory.
 - semantic search.
-- skills or providers beyond the current JSON memory provider.
+- real Skills, plugins, or providers beyond the current JSON memory provider.
 
 ## Architecture Summary
 
@@ -86,6 +89,12 @@ Input -> Normalizer -> Intent Detection -> Context Builder -> Memory Retrieval
       -> Future LLM -> Response Validator
 ```
 
+Skills flow:
+
+```text
+Discovery -> Registry -> Resolver -> Executor -> Lifecycle -> SkillResult
+```
+
 For the high-level architecture, read `.ai/ARCHITECTURE.md`.
 
 For practical dependency rules and examples, read `.ai/ARCHITECTURE_GUIDE.md`.
@@ -93,6 +102,10 @@ For practical dependency rules and examples, read `.ai/ARCHITECTURE_GUIDE.md`.
 For the detailed intelligence architecture, read `docs/architecture/INTELLIGENCE_ARCHITECTURE.md`.
 
 For the request lifecycle, read `docs/architecture/PIPELINE_LIFECYCLE.md`.
+
+For the Skills Runtime, read `docs/architecture/SKILLS_ARCHITECTURE.md`.
+
+For future Skill authoring, read `docs/SKILL_DEVELOPMENT_GUIDE.md`.
 
 ## How to Run
 
@@ -141,7 +154,8 @@ dist/nyx_local_project.zip
 - `src/nyx_local/application/`: application orchestration.
 - `src/nyx_local/core/`: bootstrap, settings, registry, and shared primitives.
 - `src/nyx_local/core/pipeline/`: intelligence pipeline models, stages, and execution flow.
-- `src/nyx_local/core/skills/`: initial Skill Manager and Registry infrastructure.
+- `src/nyx_local/core/skills/`: Skills Runtime discovery, registry, resolver,
+  executor, lifecycle, models, and contracts.
 - `src/nyx_local/domain/`: contracts and domain models.
 - `src/nyx_local/infrastructure/`: concrete adapter implementations.
 - `src/nyx_local/interfaces/`: input and output boundaries.
@@ -192,6 +206,7 @@ Completed:
 - Bootstrap and application infrastructure;
 - JSON-backed memory foundation;
 - Intelligence Pipeline foundation;
+- Skills Runtime foundation;
 - AI development documentation.
 
 Future work may include richer local memory providers, user-facing interfaces, skills, providers, and AI integration, only when approved by future Sprints.

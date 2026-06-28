@@ -84,6 +84,19 @@ Detailed documentation lives in `docs/architecture/INTELLIGENCE_ARCHITECTURE.md`
 
 The request lifecycle is documented in `docs/architecture/PIPELINE_LIFECYCLE.md`.
 
+## Skills Flow
+
+The current Skills Runtime flow is:
+
+```text
+Discovery -> Registry -> Resolver -> Executor -> Lifecycle -> SkillResult
+```
+
+The runtime provides the official extensibility boundary for future executable
+capabilities. It does not implement real integrations yet.
+
+Detailed documentation lives in `docs/architecture/SKILLS_ARCHITECTURE.md`.
+
 ## Layer Responsibilities
 
 - `interfaces`: input and output boundaries.
@@ -113,5 +126,5 @@ The request lifecycle is documented in `docs/architecture/PIPELINE_LIFECYCLE.md`
 - JSON-backed persistent memory foundation.
 - Intelligence Pipeline foundation.
 - Pipeline Builder and Stage Registry.
-- Initial Skill Manager and Skill Registry infrastructure.
+- Skills Runtime with discovery, registry, resolver, executor, lifecycle, context, manifest, and result models.
 - AI collaboration documentation.

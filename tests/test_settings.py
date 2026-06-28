@@ -9,3 +9,5 @@ def test_settings_has_default_application_values() -> None:
     assert settings.debug is False
     assert settings.memory.provider == "json"
     assert settings.memory.path == "data/memory.json"
+    assert settings.skills.search_paths == ("skills",)
+    assert settings.skills.api_version == "1"

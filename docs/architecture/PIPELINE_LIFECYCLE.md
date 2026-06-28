@@ -113,6 +113,10 @@ Skills answer "how to execute".
 
 Pipeline answers "how to think".
 
+The Skills Runtime already provides Discovery, Registry, Resolver, Executor,
+Lifecycle, Context, Manifest, and standardized Result infrastructure. It does
+not execute user-facing integrations yet.
+
 ## Response
 
 Application wraps pipeline output into the project `Response` model.
@@ -138,7 +142,11 @@ Bootstrap
   creates StageRegistry
   creates PipelineBuilder
   creates IntelligencePipeline
+  creates SkillDiscovery
   creates SkillRegistry
+  creates SkillResolver
+  creates SkillLifecycle
+  creates SkillExecutor
   creates SkillManager
   registers components
 
@@ -162,6 +170,7 @@ Current state:
 
 - unnecessary stage construction was removed from `IntelligencePipeline`;
 - stage metadata prepares observability and dynamic loading;
+- Skills Runtime responsibilities are separated from Pipeline responsibilities;
 - Skill infrastructure exists but does not execute user-facing behavior;
 - `PipelineContext` remains flat for simplicity;
 - future state splitting is documented but not implemented prematurely.

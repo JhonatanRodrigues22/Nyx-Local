@@ -28,7 +28,7 @@ mypy src scripts main.py
 - IntelligencePipeline execution.
 - Pipeline stage behavior.
 - PipelineBuilder and StageRegistry ordering.
-- SkillRegistry and SkillManager infrastructure.
+- Skills Runtime discovery, registry, resolver, executor, lifecycle, and manager behavior.
 - PR preparation script command generation.
 
 ## Test Guidelines

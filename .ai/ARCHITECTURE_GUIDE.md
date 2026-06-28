@@ -158,6 +158,22 @@ LLMs answer "how to write".
 
 Do not put concrete skill execution, external API calls, or provider-specific logic directly inside pipeline stages.
 
+## Skills Runtime Rule
+
+The Skills Runtime answers "how to execute".
+
+`SkillDiscovery` finds candidates.
+
+`SkillRegistry` stores metadata and factories.
+
+`SkillResolver` selects a registered Skill by id or capability.
+
+`SkillExecutor` runs the selected Skill.
+
+`SkillLifecycle` coordinates lifecycle hooks.
+
+Skills receive dependencies through `SkillContext`, not by instantiating services directly.
+
 ## Pipeline Construction Rule
 
 `IntelligencePipeline` executes stages only.

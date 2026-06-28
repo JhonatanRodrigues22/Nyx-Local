@@ -22,7 +22,7 @@ Documentation refinement.
 - JSON-backed persistent memory foundation.
 - Intelligence Pipeline foundation.
 - Pipeline Builder and Stage Registry.
-- Initial Skills infrastructure.
+- Skills Runtime foundation.
 - Git/Pull Request preparation workflow.
 - AI collaboration documentation.
 

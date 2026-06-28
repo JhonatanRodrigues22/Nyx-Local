@@ -44,6 +44,8 @@ Use this folder as the source of truth for architecture, workflow, development s
 
 - `docs/architecture/INTELLIGENCE_ARCHITECTURE.md`: detailed Intelligence Pipeline architecture.
 - `docs/architecture/PIPELINE_LIFECYCLE.md`: request lifecycle through pipeline, planner, validator, future skills, history, and memory.
+- `docs/architecture/SKILLS_ARCHITECTURE.md`: detailed Skills Runtime architecture.
+- `docs/SKILL_DEVELOPMENT_GUIDE.md`: conventions for future Skill development.
 
 ## Navigation Rule
 

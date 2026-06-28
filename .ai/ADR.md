@@ -89,3 +89,18 @@ Status: Accepted
 Decision: Nyx Local has an initial Skills infrastructure with `Skill`, `SkillRegistry`, `SkillManager`, and `SkillResult`, but no user-facing Skill behavior.
 
 Reason: The project needs a clear boundary before future executable integrations are added. Pipeline thinks; Skills execute.
+
+## ADR-0012: Official Skills Runtime
+
+Status: Accepted
+
+Decision: Nyx Local uses `core/skills` as the official extensibility runtime with
+separate Discovery, Registry, Resolver, Executor, Lifecycle, Context, Manifest,
+Request, Registration, and Result responsibilities.
+
+Reason: Future integrations must be added as independent Skills without changing
+the application core or mixing execution logic into the Intelligence Pipeline.
+
+Consequence: Real integrations, plugin loading, marketplace behavior, and hot
+reload remain future capabilities. This runtime only establishes the contract and
+execution boundary.
