@@ -62,6 +62,26 @@ Application -> MemoryService -> MemoryProvider -> JsonMemoryProvider -> data/mem
 
 Application may use `MemoryService`, but it must not know JSON persistence details.
 
+## Intelligence Flow
+
+The current Intelligence Pipeline flow is:
+
+```text
+Input -> Normalizer -> Intent Detection -> Context Builder -> Memory Retrieval
+      -> Project Retrieval -> Reasoning Planner -> Prompt Composer
+      -> Future LLM -> Response Validator
+```
+
+The Pipeline prepares reasoning before any future LLM call.
+
+Responsibility split:
+
+- Pipeline thinks.
+- LLM writes.
+- Skills execute.
+
+Detailed documentation lives in `docs/architecture/INTELLIGENCE_ARCHITECTURE.md`.
+
 ## Layer Responsibilities
 
 - `interfaces`: input and output boundaries.
@@ -89,4 +109,5 @@ Application may use `MemoryService`, but it must not know JSON persistence detai
 - Bootstrap and component Registry.
 - Settings dataclass.
 - JSON-backed persistent memory foundation.
+- Intelligence Pipeline foundation.
 - AI collaboration documentation.

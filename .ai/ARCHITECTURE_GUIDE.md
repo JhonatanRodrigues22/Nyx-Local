@@ -121,6 +121,7 @@ Use Core for:
 - Settings;
 - Registry;
 - shared Request and Response models.
+- Intelligence Pipeline execution and stage orchestration.
 
 Keep package-level exports small to avoid import cycles.
 
@@ -143,7 +144,18 @@ Before adding code, ask:
 - Is this a service boundary? Put it in `services`.
 - Is this concrete persistence or external detail? Put it in `infrastructure`.
 - Is this startup wiring? Put it in `core`.
+- Is this pre-LLM reasoning? Put it in `core/pipeline`.
 - Is this input or output? Put it in `interfaces`.
+
+## Intelligence Pipeline Rule
+
+The Intelligence Pipeline answers "how to think".
+
+Skills answer "how to execute".
+
+LLMs answer "how to write".
+
+Do not put concrete skill execution, external API calls, or provider-specific logic directly inside pipeline stages.
 
 ## Import Cycle Rule
 

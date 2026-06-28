@@ -22,6 +22,7 @@ Nyx Local currently includes:
 - Bootstrap, Settings, Registry, App, Application, and ConsoleInterface;
 - Request and Response models;
 - a JSON-backed persistent memory foundation;
+- a stage-based Intelligence Pipeline for pre-LLM reasoning;
 - Git/Pull Request workflow support;
 - an `.ai` knowledge base for onboarding and governance.
 

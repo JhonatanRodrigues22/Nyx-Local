@@ -20,6 +20,7 @@ Documentation refinement.
 - Console response rendering.
 - Registry and Settings.
 - JSON-backed persistent memory foundation.
+- Intelligence Pipeline foundation.
 - Git/Pull Request preparation workflow.
 - AI collaboration documentation.
 
@@ -27,7 +28,7 @@ Documentation refinement.
 
 Do not implement new application behavior during documentation-only Meta Sprints.
 
-Future capabilities such as LLM integration, additional providers, vector memory, semantic search, Obsidian integration, and advanced memory workflows require explicit Sprint approval.
+Future capabilities such as LLM integration, additional providers, vector memory, semantic search, Obsidian integration, skills, and advanced memory workflows require explicit Sprint approval.
 
 ## Key References
 
