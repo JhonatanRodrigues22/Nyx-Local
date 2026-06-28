@@ -1,23 +1,45 @@
 # Nyx Local AI Knowledge Index
 
-The `.ai` directory is the official institutional memory of the Nyx Local project.
+The `.ai` directory is the official institutional memory of Nyx Local.
 
-## Documents
+Use this folder as the source of truth for architecture, workflow, development standards, and collaboration rules.
 
-- `AI_ONBOARDING.md`: Entry point for AI and human collaborators.
-- `DEVELOPMENT_RULES.md`: AI-focused development rules.
-- `SPRINT_BLUEPRINT.md`: Official template for future Sprints.
-- `ARCHITECTURE_GUIDE.md`: Layer responsibilities and dependency rules.
-- `CODE_STYLE.md`: Code organization, naming, and testing standards.
+## Recommended Reading Order
+
+1. `AI_ONBOARDING.md`
+2. `PROJECT.md`
+3. `STACK.md`
+4. `ARCHITECTURE.md`
+5. `WORKFLOW.md`
+6. `SPRINT_BLUEPRINT.md`
+7. `DEVELOPMENT_RULES.md`
+8. `CODE_STYLE.md`
+9. `REVIEW_CHECKLIST.md`
+10. Supporting references as needed
+
+## Core Documents
+
+- `AI_ONBOARDING.md`: entry point for AI and human collaborators.
+- `PROJECT.md`: project identity, current phase, and restrictions.
+- `STACK.md`: language and dependency baseline.
+- `ARCHITECTURE.md`: high-level architecture overview.
+- `WORKFLOW.md`: mandatory Sprint and delivery flow.
+- `SPRINT_BLUEPRINT.md`: official Sprint template.
+- `DEVELOPMENT_RULES.md`: implementation and collaboration rules.
+- `CODE_STYLE.md`: official code style and testing standard.
 - `REVIEW_CHECKLIST.md`: Pull Request review checklist.
-- `PROJECT.md`: Project identity and scope.
-- `TEAM.md`: Team roles and responsibilities.
-- `ARCHITECTURE.md`: Official architectural direction.
-- `STACK.md`: Official technology stack.
-- `CODING_STYLE.md`: Legacy coding conventions summary. Prefer `CODE_STYLE.md`.
-- `WORKFLOW.md`: Mandatory sprint workflow.
-- `SKILLS.md`: Project skill expectations.
+
+## Supporting References
+
+- `ARCHITECTURE_GUIDE.md`: practical layer rules, examples, and dependency guidance.
 - `ADR.md`: Architecture Decision Records.
-- `TESTING.md`: Testing direction.
-- `ROADMAP.md`: Roadmap and sprint history.
-- `DO_NOT.md`: Explicit restrictions.
+- `ROADMAP.md`: Sprint history and current direction.
+- `TESTING.md`: testing guidance and current focus.
+- `TEAM.md`: team roles and source-of-truth rule.
+- `SKILLS.md`: expected implementation skills.
+- `DO_NOT.md`: explicit restrictions.
+- `CODING_STYLE.md`: legacy compatibility pointer to `CODE_STYLE.md`.
+
+## Navigation Rule
+
+If two documents appear to answer the same question, prefer the document with the most specific responsibility and update cross-references instead of duplicating content.

@@ -2,13 +2,19 @@
 
 Every Sprint should deliver a new capability for Nyx Local, not just add code.
 
+Use this blueprint when preparing future Sprint prompts.
+
 ## Planning Philosophy
 
-A good Sprint is small, explicit, and reviewable. It should explain why the capability matters, where it belongs in the architecture, what is excluded, and how completion will be verified.
+A good Sprint is:
 
-Avoid broad prompts that mix unrelated goals. If a feature requires multiple layers, define the intended flow between those layers.
+- small enough to review;
+- clear about its new capability;
+- explicit about architecture;
+- strict about what is out of scope;
+- verifiable through acceptance criteria.
 
-## Required Sprint Structure
+## Required Structure
 
 ```markdown
 # Sprint N - Title
@@ -43,8 +49,20 @@ Code, tests, documentation, package, branch, and Pull Request expectations.
 
 ## Sprint Milestone
 
-A short phrase that names the new capability.
+A short phrase that names the capability added.
 ```
+
+## Sprint Report Requirement
+
+Every future `SPRINT_REPORT.md` must include:
+
+```markdown
+## Capability Added
+
+Nyx Local now ...
+```
+
+This section must describe the actual capability gained by the project.
 
 ## Implementation Principle
 

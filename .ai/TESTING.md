@@ -1,24 +1,39 @@
 # Testing
 
-## Current State
+This document describes the current testing baseline.
 
-The `tests/` directory contains minimal tests for Sprint 02 core foundation behavior.
+For coding standards, read `CODE_STYLE.md`.
 
 ## Tooling
 
-The project is prepared to use `pytest`.
+Nyx Local uses `pytest` for tests.
+
+Static checks:
+
+```powershell
+ruff check .
+mypy src scripts main.py
+```
 
 ## Current Coverage Focus
 
-- `Request`
-- `Response`
-- `Application`
-- `ConsoleInterface`
-- `Bootstrap`
-- `Registry`
-- `Settings`
-- Basic PR preparation script command generation
+- Request and Response models.
+- Application handling.
+- Console response rendering.
+- Bootstrap initialization and shutdown.
+- Registry behavior.
+- Settings defaults.
+- MemoryService and JsonMemoryProvider.
+- Persistent memory between provider instances.
+- PR preparation script command generation.
+
+## Test Guidelines
+
+- Add focused tests for new behavior.
+- Use temporary paths for filesystem tests.
+- Keep tests tied to Sprint acceptance criteria.
+- Avoid broad scaffolding for placeholder-only structure.
 
 ## Rule
 
-Testing strategy will evolve according to future Sprint requirements.
+Testing strategy evolves with future Sprints. Do not add test infrastructure beyond the approved scope.

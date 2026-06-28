@@ -1,31 +1,46 @@
 # AI Development Rules
 
+This document defines how humans and AI collaborators should work inside Nyx Local.
+
+For code style, read `CODE_STYLE.md`.
+
+For architecture boundaries, read `ARCHITECTURE_GUIDE.md`.
+
 ## Source of Truth
 
 - The `.ai` directory is official project documentation.
-- Every collaborator must read `.ai` before starting a Sprint.
+- Every Sprint starts by reading `.ai`.
 - Architecture decisions belong to the Tech Leader.
-- Implementation must follow approved documentation.
+- If documentation and code conflict, treat documentation as official and report the mismatch.
 
 ## Scope Control
 
-- Implement only what the Sprint authorizes.
-- Do not add adjacent capabilities because they seem useful.
-- Do not change architecture without approval.
-- If a better architecture is identified, register it as a suggestion.
+- Implement only the Sprint scope.
+- Do not add adjacent capabilities without approval.
+- Do not alter architecture by initiative.
+- Register improvement ideas as suggestions instead of implementing them directly.
 
 ## Sprint Completion
 
-- Update only impacted `.ai` documents.
-- Update `SPRINT_REPORT.md`.
-- Run the relevant checks.
-- Generate `dist/nyx_local_project.zip`.
-- Prepare a branch and Pull Request for review.
+Every Sprint must end with:
+
+- impacted `.ai` documents updated;
+- `SPRINT_REPORT.md` updated;
+- `Capability Added` section included in the Sprint Report;
+- relevant checks executed;
+- clean package generated;
+- branch prepared for review;
+- Pull Request opened when requested.
 
 ## Git and Pull Request
 
-- Use `scripts/prepare_pr.py` to prepare Sprint branches.
-- Do not push before the work is ready for review.
+- Use `scripts/prepare_pr.py` during delivery preparation.
 - Do not merge Pull Requests automatically.
-- Pull Requests must summarize the Sprint clearly.
-- Push requires explicit JJ confirmation when not directly requested.
+- Do not push unless the user has requested or approved it.
+- Pull Requests must clearly explain what changed and why.
+
+## Documentation Responsibility
+
+Each document should answer one primary question.
+
+Avoid duplicating guidance. Prefer cross-references between documents.

@@ -2,54 +2,61 @@
 
 This is the entry point for any AI or human collaborator joining Nyx Local.
 
-## Project Vision
+## What Nyx Local Is
 
-Nyx Local is a local-first Python application prepared for modular growth. The project evolves through small Sprints that add clear capabilities while preserving a clean layered architecture.
+Nyx Local is a local-first Python application designed to grow through small, explicit Sprints.
 
-## Current Goal
+The project values:
 
-Build a stable local application foundation before adding advanced capabilities. Features must be introduced only when a Sprint explicitly authorizes them.
+- clarity;
+- low coupling;
+- documentation as source of truth;
+- conservative architecture changes;
+- collaboration between humans and AI contributors.
 
-## Architecture Summary
+## What Exists Today
 
-Nyx Local uses a layered `src/` layout:
+Nyx Local currently includes:
 
-- `domain`: Contracts, models, and business concepts. It must not depend on infrastructure.
-- `application`: Use case orchestration. It depends on abstractions and services, not concrete infrastructure.
-- `services`: Application service boundaries.
-- `core`: Bootstrap, settings, registry, request and response primitives.
-- `infrastructure`: Concrete adapters that implement contracts.
-- `interfaces`: Input and output boundaries.
+- a layered Python structure;
+- Bootstrap, Settings, Registry, App, Application, and ConsoleInterface;
+- Request and Response models;
+- a JSON-backed persistent memory foundation;
+- Git/Pull Request workflow support;
+- an `.ai` knowledge base for onboarding and governance.
 
-## Development Flow
+## First Reading Path
 
-Before any implementation:
+Read these documents in order:
 
-1. Read the entire `.ai` directory.
+1. `00_INDEX.md`
+2. `PROJECT.md`
+3. `STACK.md`
+4. `ARCHITECTURE.md`
+5. `WORKFLOW.md`
+6. `SPRINT_BLUEPRINT.md`
+7. `DEVELOPMENT_RULES.md`
+8. `CODE_STYLE.md`
+9. `REVIEW_CHECKLIST.md`
+
+## How to Start a Sprint
+
+1. Read the full `.ai` directory.
 2. Read the Sprint prompt.
-3. Check for conflicts between documentation and code.
-4. Follow the documented architecture.
+3. Check whether documentation and code agree.
+4. Implement only the approved scope.
+5. Update impacted documentation.
+6. Run checks and generate the package.
+7. Prepare a branch and Pull Request for review.
 
-After implementation:
+## Source of Truth
 
-1. Update only the documentation that actually changed.
-2. Run the relevant checks.
-3. Generate the clean package.
-4. Prepare the Git/Pull Request flow.
-5. Deliver for Tech Leader review.
+If code and `.ai` documentation conflict, follow `.ai` and record the inconsistency for Tech Leader review.
 
-## Important Documents
+## Important Boundaries
 
-- `00_INDEX.md`: Map of institutional knowledge.
-- `PROJECT.md`: Project identity and current phase.
-- `ARCHITECTURE.md`: Official architecture history.
-- `ARCHITECTURE_GUIDE.md`: Layer rules and dependency guidance.
-- `WORKFLOW.md`: Mandatory Sprint workflow.
-- `SPRINT_BLUEPRINT.md`: Template for future Sprints.
-- `CODE_STYLE.md`: Coding and testing standards.
-- `REVIEW_CHECKLIST.md`: Pull Request review checklist.
-- `DO_NOT.md`: Explicit restrictions.
-
-## Collaboration Rule
-
-Documentation is the source of truth. If code and `.ai` documentation conflict, follow `.ai` and register the inconsistency for Tech Leader review.
+- Domain must not depend on Infrastructure.
+- Application must not depend on concrete providers.
+- Bootstrap owns concrete wiring.
+- Infrastructure implements Domain contracts.
+- Interfaces handle input/output only.

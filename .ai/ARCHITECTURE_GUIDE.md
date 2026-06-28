@@ -1,111 +1,158 @@
 # Architecture Guide
 
-Nyx Local uses a layered architecture designed for low coupling and future extension.
+`ARCHITECTURE_GUIDE.md` is the practical companion to `ARCHITECTURE.md`.
 
-## Layers
+Use `ARCHITECTURE.md` for the system overview. Use this guide when deciding where code belongs.
 
-### Domain
+## Dependency Rules
 
-Defines contracts, models, and core concepts.
-
-Allowed dependencies:
-
-- Python standard library.
-- Other domain modules when necessary.
-
-Forbidden dependencies:
-
-- `infrastructure`
-- concrete providers
-- UI or console code
-- framework-specific code
-
-### Application
-
-Coordinates use cases and application flow.
-
-Allowed dependencies:
-
-- `domain`
-- `services`
-- `core` request and response primitives when appropriate
-
-Forbidden dependencies:
-
-- concrete infrastructure implementations such as JSON, SQLite, Obsidian, APIs, or vector stores
-
-### Services
-
-Encapsulates application-facing service boundaries.
-
-Allowed dependencies:
-
-- `domain` contracts
-- abstractions injected by Bootstrap
-
-Forbidden dependencies:
-
-- UI rendering
-- direct user interaction
-
-### Core
-
-Owns bootstrap, settings, registry, and shared primitives.
-
-Allowed dependencies:
-
-- components required for application wiring
-
-Rule:
-
-Keep package-level exports light to avoid import cycles.
-
-### Infrastructure
-
-Implements contracts defined by `domain`.
-
-Allowed dependencies:
-
-- `domain` contracts and models
-- Python standard library
-
-Rule:
-
-Infrastructure may know implementation details. Other layers should not depend on those details.
-
-### Interfaces
-
-Handles input and output boundaries such as console rendering.
-
-Allowed dependencies:
-
-- response models
-- application entry points
-
-Forbidden dependencies:
-
-- business rules
-- persistence details
-
-## Dependency Direction
-
-Preferred direction:
+## Allowed Direction
 
 ```text
 interfaces -> core/bootstrap -> application -> services -> domain
                                      infrastructure -> domain
 ```
 
-Domain never knows infrastructure.
+Infrastructure may depend on Domain because it implements Domain contracts.
 
-Application never depends on concrete providers.
+Application may depend on Services and Domain abstractions.
 
-Infrastructure implements contracts defined by Domain.
+Domain must remain independent.
 
-## Decoupling Principles
+## Forbidden Direction
 
-- Depend on abstractions when crossing boundaries.
-- Register concrete implementations during bootstrap.
-- Keep persistence details inside infrastructure.
-- Keep rendering details inside interfaces.
-- Add abstractions only when they protect a real boundary.
+Avoid these dependencies:
+
+```text
+domain -> infrastructure
+application -> infrastructure concrete classes
+services -> interfaces
+infrastructure -> interfaces
+```
+
+## Layer Guide
+
+## Domain
+
+Use Domain for:
+
+- contracts;
+- domain models;
+- abstractions that infrastructure must implement.
+
+Correct:
+
+```text
+domain/memory.py defines MemoryProvider.
+```
+
+Incorrect:
+
+```text
+domain imports JsonMemoryProvider.
+```
+
+## Application
+
+Use Application for:
+
+- receiving Requests;
+- coordinating services;
+- returning Responses.
+
+Correct:
+
+```text
+Application receives MemoryService.
+```
+
+Incorrect:
+
+```text
+Application opens data/memory.json directly.
+```
+
+## Services
+
+Use Services for:
+
+- application-facing operations;
+- wrapping providers behind simple methods;
+- keeping use case code clear.
+
+Correct:
+
+```text
+MemoryService talks to MemoryProvider.
+```
+
+Incorrect:
+
+```text
+ConsoleInterface calls MemoryService directly.
+```
+
+## Infrastructure
+
+Use Infrastructure for:
+
+- JSON persistence;
+- future SQLite adapters;
+- future Obsidian adapters;
+- external system details.
+
+Correct:
+
+```text
+JsonMemoryProvider implements MemoryProvider.
+```
+
+Incorrect:
+
+```text
+Application imports JsonMemoryProvider.
+```
+
+## Core
+
+Use Core for:
+
+- Bootstrap;
+- Settings;
+- Registry;
+- shared Request and Response models.
+
+Keep package-level exports small to avoid import cycles.
+
+## Interfaces
+
+Use Interfaces for:
+
+- console output;
+- future CLI input;
+- future API or UI boundaries.
+
+Interfaces should not contain persistence or business rules.
+
+## Practical Checklist
+
+Before adding code, ask:
+
+- Is this a contract or model? Put it in `domain`.
+- Is this orchestration? Put it in `application`.
+- Is this a service boundary? Put it in `services`.
+- Is this concrete persistence or external detail? Put it in `infrastructure`.
+- Is this startup wiring? Put it in `core`.
+- Is this input or output? Put it in `interfaces`.
+
+## Import Cycle Rule
+
+If adding a package-level export creates an import cycle, prefer explicit module imports.
+
+Example:
+
+```python
+from nyx_local.core.bootstrap import Bootstrap
+```
+
+instead of forcing `Bootstrap` through `nyx_local.core`.

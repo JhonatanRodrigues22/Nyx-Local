@@ -2,26 +2,32 @@
 
 Use this checklist before approving a Pull Request.
 
+## Capability
+
+- [ ] The PR states the capability added.
+- [ ] `SPRINT_REPORT.md` includes `Capability Added`.
+- [ ] The implementation matches the Sprint acceptance criteria.
+
 ## Architecture
 
-- [ ] The implementation follows the documented layer boundaries.
-- [ ] Domain does not depend on infrastructure.
+- [ ] Layer boundaries from `ARCHITECTURE_GUIDE.md` are respected.
+- [ ] Domain does not depend on Infrastructure.
 - [ ] Application does not depend on concrete providers.
-- [ ] Infrastructure implements domain contracts.
+- [ ] Infrastructure implements Domain contracts.
 - [ ] Bootstrap owns concrete wiring.
 
 ## Scope
 
-- [ ] The PR implements only the Sprint scope.
+- [ ] The PR implements only the approved scope.
 - [ ] Out-of-scope capabilities were not added.
 - [ ] No unnecessary dependencies were introduced.
 
 ## Code Quality
 
-- [ ] Responsibilities are clear and focused.
-- [ ] Naming matches existing project conventions.
+- [ ] Responsibilities are clear.
+- [ ] Naming follows `CODE_STYLE.md`.
 - [ ] No avoidable import cycles were introduced.
-- [ ] Code is simple enough for future contributors to extend.
+- [ ] The code remains easy to extend.
 
 ## Tests
 
@@ -32,11 +38,12 @@ Use this checklist before approving a Pull Request.
 ## Documentation
 
 - [ ] Impacted `.ai` documents were updated.
-- [ ] `SPRINT_REPORT.md` was updated.
+- [ ] Cross-references are clear.
+- [ ] No conflicting duplicate guidance was introduced.
 - [ ] Architectural decisions were recorded when needed.
 
 ## Delivery
 
 - [ ] `scripts/package_project.py` was executed.
+- [ ] The Pull Request body explains what changed and why.
 - [ ] The branch is ready for Tech Leader review.
-- [ ] The PR body clearly explains what changed and why.

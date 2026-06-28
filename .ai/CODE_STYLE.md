@@ -1,45 +1,71 @@
 # Code Style
 
-## General
+`CODE_STYLE.md` is the single official code style reference for Nyx Local.
 
-- Prefer clear, boring Python.
-- Keep modules small and responsibilities focused.
-- Use dataclasses for simple data models.
-- Use ABCs for stable contracts between layers.
+`CODING_STYLE.md` is retained only as a legacy pointer.
+
+## General Principles
+
+- Prefer clear, simple Python.
+- Keep modules focused on one responsibility.
 - Avoid overengineering.
+- Add abstractions only when they protect a real boundary.
+- Keep implementation aligned with `.ai/ARCHITECTURE_GUIDE.md`.
 
 ## Naming
 
-- Use names that describe the role in the architecture.
+- Use `Request` and `Response` for application flow models.
 - Use `handle()` for application request handling.
 - Use `Service` for application service boundaries.
-- Use `Provider` for concrete or abstract capability providers.
+- Use `Provider` for capability providers.
+- Use concrete names for infrastructure implementations, such as `JsonMemoryProvider`.
 
 ## File Organization
 
-- Put contracts and domain models in `domain`.
-- Put orchestration in `application`.
-- Put concrete adapters in `infrastructure`.
-- Put bootstrap and shared primitives in `core`.
-- Put human or machine interaction boundaries in `interfaces`.
-- Put service boundaries in `services`.
+- `domain`: contracts and domain models.
+- `application`: orchestration and request handling.
+- `services`: application-facing service boundaries.
+- `core`: bootstrap, settings, registry, shared primitives.
+- `infrastructure`: concrete adapters.
+- `interfaces`: input and output boundaries.
+- `tests`: focused automated tests.
 
-## SOLID Guidance
+## Dataclasses and ABCs
 
-- Single responsibility matters more than clever reuse.
-- Prefer dependency injection through constructors or Bootstrap.
-- Avoid hidden global state.
-- Avoid singletons unless a future Sprint explicitly approves one.
+Use dataclasses for plain data models.
 
-## Documentation
+Use ABCs when a layer needs to depend on a stable contract instead of a concrete implementation.
 
-- Document public architectural decisions in `.ai`.
-- Keep comments rare and useful.
-- Update only documents affected by the Sprint.
+## Dependency Injection
+
+Prefer constructor injection or Bootstrap wiring.
+
+Avoid hidden global state.
+
+Avoid singletons unless a future Sprint explicitly approves one.
+
+## Comments and Documentation
+
+- Use comments only when they clarify non-obvious code.
+- Record architectural decisions in `ADR.md`.
+- Update only documentation affected by the Sprint.
+- Keep Sprint documentation consistent with `SPRINT_BLUEPRINT.md`.
 
 ## Tests
 
-- Add focused tests for new behavior.
-- Test persistence and boundaries when they are part of the Sprint.
-- Avoid large test suites for placeholder-only structure.
-- Use temporary paths for filesystem tests.
+- Add tests for new behavior.
+- Use temporary directories for filesystem persistence tests.
+- Keep tests focused on acceptance criteria.
+- Do not add broad test scaffolding for placeholder-only structure.
+
+## Formatting and Tools
+
+Use the project configuration in `pyproject.toml`.
+
+Expected local checks:
+
+```powershell
+pytest
+ruff check .
+mypy src scripts main.py
+```

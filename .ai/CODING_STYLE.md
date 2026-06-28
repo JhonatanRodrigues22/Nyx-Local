@@ -1,17 +1,7 @@
 # Coding Style
 
-This file is kept for compatibility with earlier Sprints.
+This document is retained for compatibility with earlier Sprints.
 
-For the current complete standard, use `CODE_STYLE.md`.
+The official code style reference is `CODE_STYLE.md`.
 
-## General
-
-Keep code simple, explicit, and modular.
-
-## Formatting
-
-Use the project configuration in `pyproject.toml`.
-
-## Comments
-
-Use comments only when they clarify non-obvious decisions.
+Do not add new guidance here. Update `CODE_STYLE.md` instead.
