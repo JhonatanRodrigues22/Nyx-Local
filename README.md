@@ -13,6 +13,7 @@ Nyx Local currently provides the foundation for a modular local application:
 - a simple dependency Registry;
 - application Settings;
 - a JSON-backed persistent memory foundation;
+- an Intelligence Pipeline for pre-LLM reasoning;
 - an official `.ai` knowledge base for future collaborators.
 
 ## Goals
@@ -35,6 +36,7 @@ Current implemented capabilities:
 - Component registration through `Registry`.
 - Application configuration through `Settings`.
 - Persistent key-value memory through `MemoryService` and `JsonMemoryProvider`.
+- Pre-LLM reasoning through `IntelligencePipeline`.
 - AI collaboration documentation in `.ai`.
 
 Not implemented yet:
@@ -76,9 +78,19 @@ Memory flow:
 Application -> MemoryService -> MemoryProvider -> JsonMemoryProvider -> data/memory.json
 ```
 
+Intelligence flow:
+
+```text
+Input -> Normalizer -> Intent Detection -> Context Builder -> Memory Retrieval
+      -> Project Retrieval -> Reasoning Planner -> Prompt Composer
+      -> Future LLM -> Response Validator
+```
+
 For the high-level architecture, read `.ai/ARCHITECTURE.md`.
 
 For practical dependency rules and examples, read `.ai/ARCHITECTURE_GUIDE.md`.
+
+For the detailed intelligence architecture, read `docs/architecture/INTELLIGENCE_ARCHITECTURE.md`.
 
 ## How to Run
 
@@ -126,6 +138,7 @@ dist/nyx_local_project.zip
 - `scripts/`: development and delivery helpers.
 - `src/nyx_local/application/`: application orchestration.
 - `src/nyx_local/core/`: bootstrap, settings, registry, and shared primitives.
+- `src/nyx_local/core/pipeline/`: intelligence pipeline models, stages, and execution flow.
 - `src/nyx_local/domain/`: contracts and domain models.
 - `src/nyx_local/infrastructure/`: concrete adapter implementations.
 - `src/nyx_local/interfaces/`: input and output boundaries.
@@ -175,6 +188,7 @@ Completed:
 - Git/Pull Request preparation;
 - Bootstrap and application infrastructure;
 - JSON-backed memory foundation;
+- Intelligence Pipeline foundation;
 - AI development documentation.
 
 Future work may include richer local memory providers, user-facing interfaces, skills, providers, and AI integration, only when approved by future Sprints.

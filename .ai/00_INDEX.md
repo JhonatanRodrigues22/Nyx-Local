@@ -40,6 +40,10 @@ Use this folder as the source of truth for architecture, workflow, development s
 - `DO_NOT.md`: explicit restrictions.
 - `CODING_STYLE.md`: legacy compatibility pointer to `CODE_STYLE.md`.
 
+## External Architecture Documents
+
+- `docs/architecture/INTELLIGENCE_ARCHITECTURE.md`: detailed Intelligence Pipeline architecture.
+
 ## Navigation Rule
 
 If two documents appear to answer the same question, prefer the document with the most specific responsibility and update cross-references instead of duplicating content.

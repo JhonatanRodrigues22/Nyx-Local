@@ -63,3 +63,13 @@ Status: Accepted
 Decision: Nyx Local documentation follows a responsibility model: `README.md` introduces the project, `ARCHITECTURE.md` explains the high-level system, `ARCHITECTURE_GUIDE.md` gives practical rules, `CODE_STYLE.md` is the official style reference, and `SPRINT_BLUEPRINT.md` defines future Sprint structure.
 
 Reason: Documentation should behave like architecture: each document should answer a clear question without competing with another document.
+
+## ADR-0009: Stage-Based Intelligence Pipeline
+
+Status: Accepted
+
+Decision: Nyx Local uses a stage-based Intelligence Pipeline in `core/pipeline` to prepare reasoning before any future LLM call.
+
+Reason: The project needs a modular place for normalization, intent detection, context building, retrieval, planning, prompt composition, and response validation without giving the future LLM ownership of application logic.
+
+Consequence: Pipeline stages must remain focused on reasoning preparation. Skills and concrete execution logic must stay outside the Pipeline.

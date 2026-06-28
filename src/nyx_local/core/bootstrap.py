@@ -2,6 +2,17 @@ from __future__ import annotations
 
 from nyx_local.application.application import Application
 from nyx_local.core.app import App
+from nyx_local.core.pipeline import IntelligencePipeline
+from nyx_local.core.pipeline.stages import (
+    BuildContextStage,
+    ComposePromptStage,
+    DetectIntentStage,
+    NormalizeStage,
+    ProjectRetrievalStage,
+    ReasoningPlannerStage,
+    ResponseValidatorStage,
+    RetrieveMemoryStage,
+)
 from nyx_local.core.registry import Registry
 from nyx_local.core.settings import Settings
 from nyx_local.infrastructure.memory_json import JsonMemoryProvider
@@ -22,7 +33,22 @@ class Bootstrap:
         registry = Registry()
         memory_provider = JsonMemoryProvider(settings.memory.path)
         memory_service = MemoryService(memory_provider)
-        application = Application(memory_service=memory_service)
+        intelligence_pipeline = IntelligencePipeline(
+            stages=[
+                NormalizeStage(),
+                DetectIntentStage(),
+                BuildContextStage(),
+                RetrieveMemoryStage(memory_reader=memory_service),
+                ProjectRetrievalStage(),
+                ReasoningPlannerStage(),
+                ComposePromptStage(),
+                ResponseValidatorStage(),
+            ]
+        )
+        application = Application(
+            memory_service=memory_service,
+            intelligence_pipeline=intelligence_pipeline,
+        )
         console = ConsoleInterface()
 
         app = App(
@@ -35,6 +61,7 @@ class Bootstrap:
         registry.register("settings", settings)
         registry.register("memory_provider", memory_provider)
         registry.register("memory_service", memory_service)
+        registry.register("intelligence_pipeline", intelligence_pipeline)
         registry.register("application", application)
         registry.register("console", console)
         registry.register("app", app)

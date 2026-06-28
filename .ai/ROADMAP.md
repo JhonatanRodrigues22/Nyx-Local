@@ -36,6 +36,10 @@ AI development framework documentation for onboarding, Sprint planning, architec
 
 Documentation quality pass to consolidate responsibilities, navigation, style, README, and Sprint Report standards.
 
+## Sprint - Intelligence Pipeline
+
+Stage-based pre-LLM reasoning pipeline with context, result, stages, prompt composition, and response validation.
+
 ## Next
 
 Await Tech Leader direction for the next capability Sprint.

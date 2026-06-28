@@ -25,6 +25,8 @@ mypy src scripts main.py
 - Settings defaults.
 - MemoryService and JsonMemoryProvider.
 - Persistent memory between provider instances.
+- IntelligencePipeline execution.
+- Pipeline stage behavior.
 - PR preparation script command generation.
 
 ## Test Guidelines
