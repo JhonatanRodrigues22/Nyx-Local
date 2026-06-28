@@ -1,100 +1,190 @@
 # Nyx Local
 
-Nyx Local is a local-first Python project prepared for modular growth.
+Nyx Local is a local-first Python application built through small, reviewable Sprints. The project is designed for long-term collaboration between humans and AI contributors, with strong documentation, explicit architecture boundaries, and a conservative development workflow.
 
-This initial sprint creates only the project foundation. No business logic, AI behavior, memory system, or integrations are implemented yet.
+## Overview
 
-## Project Structure
+Nyx Local currently provides the foundation for a modular local application:
 
-- `main.py`: Minimal project entry point.
-- `src/nyx_local/`: Main Python package.
-- `src/nyx_local/core/`: Cross-cutting foundation code and shared primitives for future sprints.
-- `src/nyx_local/domain/`: Future domain models, rules, and entities.
-- `src/nyx_local/application/`: Future application use cases and orchestration.
-- `src/nyx_local/infrastructure/`: Future adapters for persistence, local resources, and external systems.
-- `src/nyx_local/interfaces/`: Future input and output boundaries such as CLI, API, or UI adapters.
-- `config/`: Future configuration templates and environment examples.
-- `docs/`: Project documentation and architectural notes.
-- `scripts/`: Utility scripts for development and maintenance.
-- `tests/`: Automated tests organized separately from production code.
+- a layered Python package structure;
+- a Bootstrap-driven startup flow;
+- shared Request and Response models;
+- a console output boundary;
+- a simple dependency Registry;
+- application Settings;
+- a JSON-backed persistent memory foundation;
+- an official `.ai` knowledge base for future collaborators.
 
-## Architectural Notes
+## Goals
 
-The project uses a `src/` layout to keep import behavior predictable and to separate production code from repository tooling.
+- Keep the project local-first and easy to run.
+- Preserve clean separation between layers.
+- Add capabilities through explicit Sprints.
+- Keep application code independent from concrete infrastructure details.
+- Make the repository understandable to future human and AI contributors.
 
-The package is divided into layers so future features can be added through clear boundaries:
+## Current Status
 
-- Domain code should not depend on infrastructure.
-- Application code should coordinate use cases without owning external details.
-- Infrastructure code should contain implementation details for external systems.
-- Interfaces should expose ways to interact with the application without embedding business rules.
+The project has completed its foundation phase and now includes first memory support through a JSON provider.
 
-## Development
+Current implemented capabilities:
+
+- Application bootstrap and shutdown flow.
+- Request handling through `Application`.
+- Response rendering through `ConsoleInterface`.
+- Component registration through `Registry`.
+- Application configuration through `Settings`.
+- Persistent key-value memory through `MemoryService` and `JsonMemoryProvider`.
+- AI collaboration documentation in `.ai`.
+
+Not implemented yet:
+
+- LLM integration.
+- SQLite memory.
+- Obsidian integration.
+- embeddings or vector memory.
+- semantic search.
+- skills or providers beyond the current JSON memory provider.
+
+## Architecture Summary
+
+Nyx Local follows a layered architecture:
+
+```text
+Interfaces
+    |
+Core / Bootstrap
+    |
+Application
+    |
+Services
+    |
+Domain contracts
+    |
+Infrastructure implementations
+```
+
+Core flow:
+
+```text
+main -> Bootstrap -> App -> Application -> ConsoleInterface
+```
+
+Memory flow:
+
+```text
+Application -> MemoryService -> MemoryProvider -> JsonMemoryProvider -> data/memory.json
+```
+
+For the high-level architecture, read `.ai/ARCHITECTURE.md`.
+
+For practical dependency rules and examples, read `.ai/ARCHITECTURE_GUIDE.md`.
+
+## How to Run
 
 Python 3.13 or newer is required.
-
-## Virtual Environment
 
 Windows PowerShell:
 
 ```powershell
 python -m venv .venv
-
 .\.venv\Scripts\Activate.ps1
-
 python -m pip install --upgrade pip
-
 pip install -r requirements.txt
-
 pip install -r requirements-dev.txt
-```
-
-Run:
-
-```powershell
 python main.py
 ```
 
-Generate package:
+## Tests and Checks
+
+```powershell
+pytest
+ruff check .
+mypy src scripts main.py
+```
+
+## Packaging
+
+Generate a clean project package:
 
 ```powershell
 python scripts/package_project.py
 ```
 
+Output:
+
+```text
+dist/nyx_local_project.zip
+```
+
+## Project Structure
+
+- `.ai/`: official institutional knowledge for humans and AI collaborators.
+- `config/`: future configuration templates.
+- `data/`: local runtime data files such as `memory.json`.
+- `docs/`: project documentation outside the AI knowledge base.
+- `scripts/`: development and delivery helpers.
+- `src/nyx_local/application/`: application orchestration.
+- `src/nyx_local/core/`: bootstrap, settings, registry, and shared primitives.
+- `src/nyx_local/domain/`: contracts and domain models.
+- `src/nyx_local/infrastructure/`: concrete adapter implementations.
+- `src/nyx_local/interfaces/`: input and output boundaries.
+- `src/nyx_local/services/`: application service boundaries.
+- `tests/`: automated tests.
+
+## Documentation
+
+Start here:
+
+1. `.ai/00_INDEX.md`
+2. `.ai/AI_ONBOARDING.md`
+3. `.ai/PROJECT.md`
+4. `.ai/STACK.md`
+5. `.ai/ARCHITECTURE.md`
+6. `.ai/WORKFLOW.md`
+7. `.ai/SPRINT_BLUEPRINT.md`
+8. `.ai/DEVELOPMENT_RULES.md`
+
+Useful references:
+
+- `.ai/CODE_STYLE.md`
+- `.ai/ARCHITECTURE_GUIDE.md`
+- `.ai/REVIEW_CHECKLIST.md`
+- `.ai/ADR.md`
+- `.ai/ROADMAP.md`
+
 ## Git / Pull Request Flow
 
-To prepare a Sprint for review:
+Prepare a Sprint branch for review:
 
 ```powershell
 python scripts/prepare_pr.py branch-name
 ```
 
-The script will:
+The script verifies Git, creates or switches branch, runs tests, generates the clean package, shows changed files, and prints commit and Pull Request guidance.
 
-- verify Git;
-- create the branch;
-- run tests;
-- generate a clean package;
-- show changed files;
-- suggest a commit;
-- guide push and Pull Request creation.
+No automatic push or Pull Request merge should happen without explicit approval.
 
-## Manual Setup
+## Roadmap
 
-Install runtime dependencies:
+Completed:
 
-```bash
-pip install -r requirements.txt
-```
+- project structure;
+- operational workflow;
+- core request/response flow;
+- Git/Pull Request preparation;
+- Bootstrap and application infrastructure;
+- JSON-backed memory foundation;
+- AI development documentation.
 
-Install development dependencies:
+Future work may include richer local memory providers, user-facing interfaces, skills, providers, and AI integration, only when approved by future Sprints.
 
-```bash
-pip install -r requirements-dev.txt
-```
+## Contributing
 
-Run the minimal entry point:
+Before contributing:
 
-```bash
-python main.py
-```
+1. Read the `.ai` directory.
+2. Follow `.ai/SPRINT_BLUEPRINT.md`.
+3. Respect `.ai/ARCHITECTURE_GUIDE.md`.
+4. Use `.ai/CODE_STYLE.md`.
+5. Check `.ai/REVIEW_CHECKLIST.md` before opening a Pull Request.

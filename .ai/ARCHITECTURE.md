@@ -1,78 +1,92 @@
 # Architecture
 
-## Current Structure
+`ARCHITECTURE.md` is the high-level architectural overview of Nyx Local.
 
-The project uses a Python `src/` layout.
+For practical dependency rules and examples, read `ARCHITECTURE_GUIDE.md`.
 
-## Packages
+## Philosophy
 
-- `core`: Future shared foundation primitives.
-- `domain`: Future domain concepts and rules.
-- `application`: Future use cases and orchestration.
-- `infrastructure`: Future external adapters and implementation details.
-- `interfaces`: Future input and output boundaries.
+Nyx Local is designed as a local-first, layered Python application. Each layer has a clear responsibility and communicates through explicit boundaries.
 
-## Sprint 02 Internal Flow
+The architecture favors:
 
-The first internal flow is:
+- low coupling;
+- simple dependency direction;
+- replaceable infrastructure;
+- small capabilities delivered through Sprints;
+- documentation as part of the system architecture.
 
-1. User
-2. Application
-3. Core
-4. Response
-5. Interface
+## System Overview
 
-The current implementation establishes:
+```text
+User / CLI
+    |
+Interfaces
+    |
+Core / Bootstrap
+    |
+Application
+    |
+Services
+    |
+Domain contracts and models
+    |
+Infrastructure implementations
+```
 
-- `Request`: Unified request model in `core`.
-- `Response`: Unified response model in `core`.
-- `Application`: Initial application orchestrator.
-- `App`: Application bootstrap and execution entry point.
+## Runtime Flow
 
-## Sprint 02.5 Refinements
+The current application startup flow is:
 
-- `Request.message` is the official user input field.
-- `Application.handle()` is the official application handler method.
-- `ConsoleInterface` is the console output boundary for rendering responses.
+```text
+main -> Bootstrap -> App -> Application -> ConsoleInterface
+```
 
-## Sprint 03 Application Infrastructure
+Bootstrap owns concrete wiring:
 
-The application initialization flow is:
+- creates `Settings`;
+- creates `Registry`;
+- creates services and concrete providers;
+- creates `Application`;
+- creates `ConsoleInterface`;
+- creates `App`;
+- registers components.
 
-1. `main`
-2. `Bootstrap`
-3. `App`
-4. `Application`
-5. `ConsoleInterface`
+## Memory Flow
 
-The current implementation establishes:
+The current memory flow is:
 
-- `Bootstrap`: Initializes settings, registry, application, console interface, and app.
-- `Settings`: Dataclass for current and future application configuration.
-- `Registry`: Simple component registry for bootstrap wiring.
-- `services`: Reserved package for future application services.
+```text
+Application -> MemoryService -> MemoryProvider -> JsonMemoryProvider -> data/memory.json
+```
 
-## Sprint 04 Memory Foundation
+Application may use `MemoryService`, but it must not know JSON persistence details.
 
-The first persistent memory flow is:
+## Layer Responsibilities
 
-1. CLI
-2. `Application`
-3. `MemoryService`
-4. `MemoryProvider`
-5. `JsonMemoryProvider`
-6. `data/memory.json`
+- `interfaces`: input and output boundaries.
+- `core`: bootstrap, settings, registry, request and response primitives.
+- `application`: application orchestration.
+- `services`: service boundaries used by application code.
+- `domain`: contracts, models, and domain concepts.
+- `infrastructure`: concrete adapters that implement domain contracts.
 
-The current implementation establishes:
+## Principles
 
-- `MemoryProvider`: Domain interface for memory operations.
-- `MemoryEntry`: Domain model for stored memory values.
-- `JsonMemoryProvider`: Infrastructure provider backed by JSON.
-- `MemoryService`: Service boundary used by application code.
-- `Settings.memory`: Configuration for memory provider and path.
+- Domain never depends on Infrastructure.
+- Application does not depend on concrete providers.
+- Infrastructure implements contracts defined by Domain.
+- Bootstrap wires concrete implementations.
+- Interfaces render or receive data but do not own business rules.
+- New capabilities should extend the system without forcing unrelated layers to change.
 
-`Application` may depend on `MemoryService`, but it must not depend on `JsonMemoryProvider` or JSON persistence details.
+## Current Capabilities
 
-## Rule
-
-Architecture must not be changed without approval from the Tech Leader.
+- Structured project foundation.
+- Request and Response models.
+- Application handler flow.
+- Console rendering boundary.
+- Bootstrap and component Registry.
+- Settings dataclass.
+- JSON-backed persistent memory foundation.
+- AI collaboration documentation.
