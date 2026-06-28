@@ -39,3 +39,11 @@ Status: Accepted
 Decision: Nyx Local uses a `Bootstrap` class to initialize application components, a `Settings` dataclass for application configuration defaults, and a simple `Registry` for component registration and lookup.
 
 Reason: This establishes a clear startup path for future capabilities without introducing AI, memory, skills, providers, databases, plugins, or external integrations.
+
+## ADR-0006: Memory Provider Abstraction with JSON Persistence
+
+Status: Accepted
+
+Decision: Nyx Local uses a domain-level `MemoryProvider` abstraction, a `MemoryService` service boundary, and an initial `JsonMemoryProvider` infrastructure implementation that persists entries in `data/memory.json`.
+
+Reason: This gives the project persistent memory now while keeping the architecture prepared for future providers such as SQLite, Obsidian, or vector storage without coupling application code to JSON.

@@ -13,6 +13,7 @@ INCLUDE_PATHS = [
     "docs",
     "config",
     "scripts",
+    "data",
     ".ai",
     "README.md",
     "DEVELOPMENT_RULES.md",

@@ -4,7 +4,9 @@ from nyx_local.application.application import Application
 from nyx_local.core.app import App
 from nyx_local.core.registry import Registry
 from nyx_local.core.settings import Settings
+from nyx_local.infrastructure.memory_json import JsonMemoryProvider
 from nyx_local.interfaces import ConsoleInterface
+from nyx_local.services.memory_service import MemoryService
 
 
 class Bootstrap:
@@ -18,7 +20,9 @@ class Bootstrap:
     def initialize(self) -> App:
         settings = Settings()
         registry = Registry()
-        application = Application()
+        memory_provider = JsonMemoryProvider(settings.memory.path)
+        memory_service = MemoryService(memory_provider)
+        application = Application(memory_service=memory_service)
         console = ConsoleInterface()
 
         app = App(
@@ -29,6 +33,8 @@ class Bootstrap:
         )
 
         registry.register("settings", settings)
+        registry.register("memory_provider", memory_provider)
+        registry.register("memory_service", memory_service)
         registry.register("application", application)
         registry.register("console", console)
         registry.register("app", app)

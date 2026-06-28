@@ -52,6 +52,27 @@ The current implementation establishes:
 - `Registry`: Simple component registry for bootstrap wiring.
 - `services`: Reserved package for future application services.
 
+## Sprint 04 Memory Foundation
+
+The first persistent memory flow is:
+
+1. CLI
+2. `Application`
+3. `MemoryService`
+4. `MemoryProvider`
+5. `JsonMemoryProvider`
+6. `data/memory.json`
+
+The current implementation establishes:
+
+- `MemoryProvider`: Domain interface for memory operations.
+- `MemoryEntry`: Domain model for stored memory values.
+- `JsonMemoryProvider`: Infrastructure provider backed by JSON.
+- `MemoryService`: Service boundary used by application code.
+- `Settings.memory`: Configuration for memory provider and path.
+
+`Application` may depend on `MemoryService`, but it must not depend on `JsonMemoryProvider` or JSON persistence details.
+
 ## Rule
 
 Architecture must not be changed without approval from the Tech Leader.

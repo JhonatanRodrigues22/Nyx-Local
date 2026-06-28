@@ -20,6 +20,10 @@ Core refinement and Git/Pull Request preparation flow.
 
 Bootstrap and application infrastructure with Settings, Registry, and Services structure.
 
+## Sprint 04
+
+First persistent memory foundation using a JSON-backed provider.
+
 ## Next
 
 Await Tech Leader direction for the next Sprint.

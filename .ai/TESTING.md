@@ -17,6 +17,9 @@ The project is prepared to use `pytest`.
 - `Bootstrap`
 - `Registry`
 - `Settings`
+- `MemoryService`
+- `JsonMemoryProvider`
+- Persistent memory between provider instances
 - Basic PR preparation script command generation
 
 ## Rule
