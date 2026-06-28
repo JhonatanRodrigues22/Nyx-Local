@@ -5,23 +5,13 @@ from typing import Any
 
 from nyx_local.core.pipeline.interfaces import Stage
 from nyx_local.core.pipeline.models import PipelineContext, PipelineResult
-from nyx_local.core.pipeline.stages import (
-    BuildContextStage,
-    ComposePromptStage,
-    DetectIntentStage,
-    NormalizeStage,
-    ProjectRetrievalStage,
-    ReasoningPlannerStage,
-    ResponseValidatorStage,
-    RetrieveMemoryStage,
-)
 
 
 class IntelligencePipeline:
     """Runs the ordered intelligence stages before any future LLM call."""
 
-    def __init__(self, stages: list[Stage] | None = None) -> None:
-        self.stages = stages if stages is not None else self.default_stages()
+    def __init__(self, stages: list[Stage]) -> None:
+        self.stages = stages
 
     def run(self, message: str, metadata: dict[str, Any] | None = None) -> PipelineResult:
         started_at = perf_counter()
@@ -51,17 +41,6 @@ class IntelligencePipeline:
                 "memory_keys": list(context.retrieved_memory),
                 "project_count": len(context.related_projects),
                 "plan": list(context.reasoning_plan),
+                "stages": [stage.metadata.id for stage in self.stages],
             },
         )
-
-    def default_stages(self) -> list[Stage]:
-        return [
-            NormalizeStage(),
-            DetectIntentStage(),
-            BuildContextStage(),
-            RetrieveMemoryStage(),
-            ProjectRetrievalStage(),
-            ReasoningPlannerStage(),
-            ComposePromptStage(),
-            ResponseValidatorStage(),
-        ]

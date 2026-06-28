@@ -1,4 +1,4 @@
-from nyx_local.core.pipeline import IntelligencePipeline
+from nyx_local.core.pipeline import IntelligencePipeline, PipelineBuilder, StageRegistry
 from nyx_local.core.pipeline.interfaces import Stage
 from nyx_local.core.pipeline.models import PipelineContext
 from nyx_local.core.pipeline.stages import (
@@ -64,3 +64,28 @@ def test_pipeline_retrieves_memory_from_explicit_metadata_keys(tmp_path) -> None
 
     assert result.internal["memory_keys"] == ["user"]
     assert "- user: JJ" in result.internal["prompt"]
+
+
+def test_stage_registry_orders_enabled_stages_by_priority() -> None:
+    registry = StageRegistry()
+    registry.register(ResponseValidatorStage)
+    registry.register(NormalizeStage)
+
+    stages = registry.create_stages()
+
+    assert [stage.metadata.id for stage in stages] == ["normalize", "validate_response"]
+
+
+def test_pipeline_builder_creates_default_pipeline_with_ordered_stages() -> None:
+    pipeline = PipelineBuilder.default().build()
+
+    assert [stage.metadata.id for stage in pipeline.stages] == [
+        "normalize",
+        "detect_intent",
+        "build_context",
+        "retrieve_memory",
+        "retrieve_projects",
+        "reasoning_planner",
+        "compose_prompt",
+        "validate_response",
+    ]

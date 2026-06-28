@@ -6,7 +6,13 @@ from typing import Any
 
 @dataclass(slots=True)
 class PipelineContext:
-    """Shared state transported across intelligence pipeline stages."""
+    """Shared state transported across intelligence pipeline stages.
+
+    Future evolution may split this model into focused state objects such as
+    ConversationState, MemoryState, PlanningState, and ExecutionState. The
+    current flat shape is intentionally kept until those boundaries become
+    necessary.
+    """
 
     original_message: str
     normalized_message: str = ""

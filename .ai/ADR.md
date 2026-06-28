@@ -73,3 +73,19 @@ Decision: Nyx Local uses a stage-based Intelligence Pipeline in `core/pipeline` 
 Reason: The project needs a modular place for normalization, intent detection, context building, retrieval, planning, prompt composition, and response validation without giving the future LLM ownership of application logic.
 
 Consequence: Pipeline stages must remain focused on reasoning preparation. Skills and concrete execution logic must stay outside the Pipeline.
+
+## ADR-0010: Pipeline Builder and Stage Registry
+
+Status: Accepted
+
+Decision: `IntelligencePipeline` no longer creates stages directly. `PipelineBuilder` and `StageRegistry` own stage construction, metadata filtering, and priority ordering.
+
+Reason: Pipeline execution should stay decoupled from stage assembly so future configuration, plugins, debugging, and dynamic loading can evolve without changing pipeline execution.
+
+## ADR-0011: Skills Infrastructure Boundary
+
+Status: Accepted
+
+Decision: Nyx Local has an initial Skills infrastructure with `Skill`, `SkillRegistry`, `SkillManager`, and `SkillResult`, but no user-facing Skill behavior.
+
+Reason: The project needs a clear boundary before future executable integrations are added. Pipeline thinks; Skills execute.

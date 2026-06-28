@@ -40,6 +40,10 @@ Documentation quality pass to consolidate responsibilities, navigation, style, R
 
 Stage-based pre-LLM reasoning pipeline with context, result, stages, prompt composition, and response validation.
 
+## Sprint - Architecture Polish
+
+Pipeline Builder, Stage Registry, stage metadata, initial Skills infrastructure, and lifecycle documentation.
+
 ## Next
 
 Await Tech Leader direction for the next capability Sprint.

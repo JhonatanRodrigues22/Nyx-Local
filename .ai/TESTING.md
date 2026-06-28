@@ -27,6 +27,8 @@ mypy src scripts main.py
 - Persistent memory between provider instances.
 - IntelligencePipeline execution.
 - Pipeline stage behavior.
+- PipelineBuilder and StageRegistry ordering.
+- SkillRegistry and SkillManager infrastructure.
 - PR preparation script command generation.
 
 ## Test Guidelines

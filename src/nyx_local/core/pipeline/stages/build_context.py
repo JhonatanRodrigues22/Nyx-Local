@@ -7,6 +7,11 @@ from nyx_local.core.pipeline.models import PipelineContext
 class BuildContextStage(Stage):
     """Build the initial structured context for reasoning."""
 
+    id = "build_context"
+    name = "Build Context"
+    priority = 30
+    enabled = True
+
     def execute(self, context: PipelineContext) -> PipelineContext:
         context.current_context.update(
             {

@@ -7,6 +7,11 @@ from nyx_local.core.pipeline.models import PipelineContext
 class ComposePromptStage(Stage):
     """Compose the future LLM prompt from pipeline context."""
 
+    id = "compose_prompt"
+    name = "Compose Prompt"
+    priority = 70
+    enabled = True
+
     def execute(self, context: PipelineContext) -> PipelineContext:
         memory_lines = [
             f"- {key}: {value}" for key, value in sorted(context.retrieved_memory.items())

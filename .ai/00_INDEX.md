@@ -43,6 +43,7 @@ Use this folder as the source of truth for architecture, workflow, development s
 ## External Architecture Documents
 
 - `docs/architecture/INTELLIGENCE_ARCHITECTURE.md`: detailed Intelligence Pipeline architecture.
+- `docs/architecture/PIPELINE_LIFECYCLE.md`: request lifecycle through pipeline, planner, validator, future skills, history, and memory.
 
 ## Navigation Rule
 

@@ -7,6 +7,11 @@ from nyx_local.core.pipeline.models import PipelineContext
 class ResponseValidatorStage(Stage):
     """Validate a future LLM response without calling an LLM."""
 
+    id = "validate_response"
+    name = "Validate Response"
+    priority = 80
+    enabled = True
+
     def execute(self, context: PipelineContext) -> PipelineContext:
         if context.llm_response is None:
             context.validated_response = "Intelligence pipeline completed without LLM execution."

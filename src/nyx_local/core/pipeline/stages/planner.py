@@ -5,7 +5,22 @@ from nyx_local.core.pipeline.models import PipelineContext
 
 
 class ReasoningPlannerStage(Stage):
-    """Create a minimal reasoning plan for future LLM prompting."""
+    """Create a minimal reasoning plan for future LLM prompting.
+
+    Future responsibility:
+    - planning;
+    - task decomposition;
+    - multi-step reasoning;
+    - tool selection;
+    - decision coordination;
+    - skill coordination through a dedicated Skill Manager;
+    - execution planning without executing actions directly.
+    """
+
+    id = "reasoning_planner"
+    name = "Reasoning Planner"
+    priority = 60
+    enabled = True
 
     def execute(self, context: PipelineContext) -> PipelineContext:
         context.reasoning_plan = [

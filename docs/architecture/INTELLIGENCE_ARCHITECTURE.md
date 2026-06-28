@@ -24,6 +24,20 @@ The LLM will eventually transform prepared context into language.
 
 Skills will eventually execute concrete actions through their own managers and boundaries.
 
+## Design Principles
+
+- Modularity: each stage has one clear responsibility.
+- Extensibility: new stages should be registered without changing pipeline execution.
+- Determinism: stage order is explicit and priority-based.
+- Low coupling: the pipeline executes stages but does not create them.
+- High cohesion: each stage owns a narrow part of the reasoning flow.
+- LLM independence: the pipeline prepares reasoning before any language model call.
+- Observability: stages expose metadata and write logs into `PipelineContext`.
+- Testability: stages, registries, builders, and pipeline execution can be tested independently.
+- Incremental evolution: future state objects and skills can be added without rewriting the pipeline.
+- Fail-safe behavior: stage errors are captured in `PipelineResult`.
+- Single responsibility: Pipeline thinks, LLM writes, Skills execute.
+
 ## Full Flow
 
 ```text
@@ -148,6 +162,29 @@ for stage in stages:
 
 This keeps the pipeline open for extension. New intelligence can be added by introducing a new Stage and placing it in the stage list.
 
+## Pipeline Builder and Stage Registry
+
+`IntelligencePipeline` only executes stages.
+
+It does not decide which stages exist, how they are ordered, or how dependencies are injected.
+
+`StageRegistry` registers stage factories.
+
+`PipelineBuilder` reads the registry, creates enabled stages, orders them by priority, and returns an `IntelligencePipeline`.
+
+This prepares future dynamic configuration, plugins, debugging, and automatic stage loading.
+
+## Stage Metadata
+
+Every Stage exposes:
+
+- `id`
+- `name`
+- `priority`
+- `enabled`
+
+These fields support future configuration, observability, monitoring, plugin loading, and debugging.
+
 ## Extensibility
 
 ## Adding a New Stage
@@ -155,8 +192,10 @@ This keeps the pipeline open for extension. New intelligence can be added by int
 1. Create a class that implements `Stage`.
 2. Implement `execute(context) -> context`.
 3. Keep the stage focused on one responsibility.
-4. Add the stage to the pipeline composition in Bootstrap or in tests.
-5. Document the stage when it becomes part of the official flow.
+4. Add stage metadata.
+5. Register the stage in `StageRegistry` through `PipelineBuilder`.
+6. Add tests for ordering and behavior.
+7. Document the stage when it becomes part of the official flow.
 
 ## Adding a New Skill
 
@@ -178,6 +217,8 @@ Skills answer "how to execute".
 
 Pipeline answers "how to think".
 
+The current Skill architecture includes `Skill`, `SkillRegistry`, `SkillManager`, and `SkillResult` as preparation only. No executable user-facing Skill is implemented yet.
+
 ## Integrating New Modules
 
 Future integrations such as Obsidian, Home Assistant, APIs, Internet, local tools, commands, vector stores, and RAG should connect through explicit providers, services, or skill boundaries.
@@ -185,6 +226,26 @@ Future integrations such as Obsidian, Home Assistant, APIs, Internet, local tool
 Do not place integration logic directly in pipeline stages.
 
 ## Architectural Decisions
+
+## Pipeline Builder
+
+Decision: Pipeline assembly belongs to `PipelineBuilder`, not `IntelligencePipeline`.
+
+Reason: Pipeline execution should not be coupled to stage construction.
+
+Advantage: Future configuration and plugin loading can change stage composition without changing pipeline execution.
+
+Limitation: Builder configuration becomes the place where stage ordering must be reviewed carefully.
+
+## Stage Registry
+
+Decision: Stage construction is registered through `StageRegistry`.
+
+Reason: This prepares automatic registration and dynamic stage loading.
+
+Advantage: New stages can be added through registration rather than by editing pipeline execution.
+
+Limitation: Duplicate stage ids replace earlier registrations by design.
 
 ## Stage Interface
 
@@ -205,6 +266,16 @@ Reason: A central context prevents large method signatures and makes stage compo
 Advantage: Stages can add information incrementally.
 
 Limitation: Context fields must remain disciplined to avoid becoming unstructured global state.
+
+Future: `PipelineContext` may later split into `ConversationState`, `MemoryState`, `PlanningState`, and `ExecutionState` when those boundaries become necessary.
+
+## Skills Boundary
+
+Decision: Skills have their own infrastructure and must remain separate from Pipeline stages.
+
+Reason: Pipeline decides how to think. Skills execute concrete actions.
+
+Advantage: Future execution logic can evolve without turning the pipeline into an action layer.
 
 ## Result Object
 

@@ -14,6 +14,11 @@ class MemoryEntryReader(Protocol):
 class RetrieveMemoryStage(Stage):
     """Retrieve explicit memory keys when a memory service is available."""
 
+    id = "retrieve_memory"
+    name = "Retrieve Memory"
+    priority = 40
+    enabled = True
+
     def __init__(self, memory_reader: MemoryEntryReader | None = None) -> None:
         self.memory_reader = memory_reader
 

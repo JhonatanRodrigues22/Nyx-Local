@@ -145,6 +145,7 @@ Before adding code, ask:
 - Is this concrete persistence or external detail? Put it in `infrastructure`.
 - Is this startup wiring? Put it in `core`.
 - Is this pre-LLM reasoning? Put it in `core/pipeline`.
+- Is this future action execution infrastructure? Put it in `core/skills`.
 - Is this input or output? Put it in `interfaces`.
 
 ## Intelligence Pipeline Rule
@@ -156,6 +157,12 @@ Skills answer "how to execute".
 LLMs answer "how to write".
 
 Do not put concrete skill execution, external API calls, or provider-specific logic directly inside pipeline stages.
+
+## Pipeline Construction Rule
+
+`IntelligencePipeline` executes stages only.
+
+`PipelineBuilder` and `StageRegistry` own stage construction and ordering.
 
 ## Import Cycle Rule
 

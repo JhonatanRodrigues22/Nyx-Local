@@ -7,6 +7,11 @@ from nyx_local.core.pipeline.models import PipelineContext
 class DetectIntentStage(Stage):
     """Detect a simple initial intent without invoking an LLM."""
 
+    id = "detect_intent"
+    name = "Detect Intent"
+    priority = 20
+    enabled = True
+
     def execute(self, context: PipelineContext) -> PipelineContext:
         message = context.normalized_message.lower()
 

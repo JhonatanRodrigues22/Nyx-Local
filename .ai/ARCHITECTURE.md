@@ -82,6 +82,8 @@ Responsibility split:
 
 Detailed documentation lives in `docs/architecture/INTELLIGENCE_ARCHITECTURE.md`.
 
+The request lifecycle is documented in `docs/architecture/PIPELINE_LIFECYCLE.md`.
+
 ## Layer Responsibilities
 
 - `interfaces`: input and output boundaries.
@@ -110,4 +112,6 @@ Detailed documentation lives in `docs/architecture/INTELLIGENCE_ARCHITECTURE.md`
 - Settings dataclass.
 - JSON-backed persistent memory foundation.
 - Intelligence Pipeline foundation.
+- Pipeline Builder and Stage Registry.
+- Initial Skill Manager and Skill Registry infrastructure.
 - AI collaboration documentation.

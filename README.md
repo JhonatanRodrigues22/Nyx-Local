@@ -92,6 +92,8 @@ For practical dependency rules and examples, read `.ai/ARCHITECTURE_GUIDE.md`.
 
 For the detailed intelligence architecture, read `docs/architecture/INTELLIGENCE_ARCHITECTURE.md`.
 
+For the request lifecycle, read `docs/architecture/PIPELINE_LIFECYCLE.md`.
+
 ## How to Run
 
 Python 3.13 or newer is required.
@@ -139,6 +141,7 @@ dist/nyx_local_project.zip
 - `src/nyx_local/application/`: application orchestration.
 - `src/nyx_local/core/`: bootstrap, settings, registry, and shared primitives.
 - `src/nyx_local/core/pipeline/`: intelligence pipeline models, stages, and execution flow.
+- `src/nyx_local/core/skills/`: initial Skill Manager and Registry infrastructure.
 - `src/nyx_local/domain/`: contracts and domain models.
 - `src/nyx_local/infrastructure/`: concrete adapter implementations.
 - `src/nyx_local/interfaces/`: input and output boundaries.
