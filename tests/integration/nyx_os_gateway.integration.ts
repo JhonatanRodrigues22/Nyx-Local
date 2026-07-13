@@ -22,7 +22,7 @@ function waitForExit(child: ChildProcessWithoutNullStreams): Promise<number | nu
 describe("Nyx OS and Nyx Local real integration", () => {
   jest.setTimeout(30_000);
 
-  it("executes local.echo through the Tool Calling Engine and Python client", async () => {
+  it("executes success and structured failure through the Python client", async () => {
     const projectPath = process.env.NYX_LOCAL_PROJECT_PATH;
     const python = process.env.NYX_LOCAL_PYTHON;
     if (!projectPath || !python) {
@@ -32,6 +32,10 @@ describe("Nyx OS and Nyx Local real integration", () => {
     const token = randomUUID();
     process.env.NYX_LOCAL_GATEWAY_TOKEN = token;
     const events = createInMemoryEventBus<NyxSystemEvents>();
+    let failedCommandMetadata: Record<string, unknown> | undefined;
+    events.on("local.command.failed", (event) => {
+      failedCommandMetadata = event.payload?.metadata;
+    });
     const runtime = new NyxRuntime(undefined, {
       events,
       registerBaseAutomations: false,
@@ -66,6 +70,28 @@ describe("Nyx OS and Nyx Local real integration", () => {
       await waitFor(() => runtime.getTools().isAvailable("local.echo"));
       const execution = await runtime.getTools().execute("local.echo", { message: "node-python" });
       expect(execution.result).toEqual({ message: "node-python" });
+
+      let commandError: unknown;
+      try {
+        await runtime.getCapabilities().execute("local.echo", { message: 42 });
+      } catch (error) {
+        commandError = error;
+      }
+
+      expect(commandError).toMatchObject({
+        code: "REMOTE_COMMAND_FAILED",
+        retryable: false,
+        details: {
+          capabilityId: "local.echo",
+          internalCode: "INVALID_SKILL_INPUT"
+        }
+      });
+      expect(failedCommandMetadata).toMatchObject({
+        requestId: expect.any(String),
+        instanceId: "nyx-local-integration",
+        capabilityId: "local.echo",
+        errorCode: "REMOTE_COMMAND_FAILED"
+      });
 
       const exitPromise = waitForExit(child);
       child.stdin.write("stop\n");
