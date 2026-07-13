@@ -83,3 +83,5 @@ Decision: Nyx Local uses a resident WebSocket client with versioned JSON envelop
 Reason: Nyx OS needs a stable local executor boundary without coupling transport to concrete skills or connecting the frozen Intelligence Pipeline to execution.
 
 Consequence: Bootstrap owns concrete wiring, Infrastructure implements the Domain transport contract, `nyx-local-gateway` owns asynchronous lifecycle, and the existing synchronous entrypoint remains unchanged.
+
+Protocol consequence: Skill-specific failure reasons remain internal. The wire protocol uses `REMOTE_COMMAND_FAILED` and carries the safe original reason in `error.details.internalCode`.

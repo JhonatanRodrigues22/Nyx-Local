@@ -30,7 +30,7 @@ mypy src scripts main.py
 - Gateway Settings and protocol serialization.
 - Skill registration, validation, and structured execution errors.
 - WebSocket connection, handshake, announcement, heartbeat, reconnect, command dispatch, and shutdown.
-- Real Nyx OS Node-to-Python Tool Calling integration.
+- Real Nyx OS Node-to-Python integration for Tool Calling success and structured skill failure.
 - PR preparation script command generation.
 
 ## Test Guidelines

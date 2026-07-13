@@ -82,6 +82,8 @@ and returns:
 
 Invalid input, unknown skills, and execution exceptions become structured results. Skill exceptions never escape to the gateway lifecycle.
 
+`SKILL_NOT_FOUND` and `INVALID_SKILL_INPUT` are internal Skill Runtime reasons, not protocol 1.0 error codes. At the network boundary they are mapped to `REMOTE_COMMAND_FAILED`; the original reason is retained in `error.details.internalCode`, together with safe primitive details. Incoming structured errors validate `code`, `message`, `retryable`, and `details` at runtime.
+
 ## Validation
 
 The normal checks are:
@@ -99,7 +101,9 @@ Real Node-to-Python integration against a Nyx OS checkout containing PR #30 is a
 python scripts/verify_nyx_os_integration.py --nyx-os C:\path\to\Nyx-OS
 ```
 
-The verifier temporarily installs a Jest harness in the Nyx OS checkout, runs a real Tool Calling round-trip, and removes the harness in a `finally` block.
+The verifier temporarily installs a Jest harness in the Nyx OS checkout, runs real success and structured-failure round-trips, and removes the harness in a `finally` block. The failure path validates `requestId`, `capabilityId`, public error code, retryability, and details across Node and Python.
+
+GitHub Actions runs `pytest`, Ruff, and strict mypy checks for pull requests and pushes to `main`.
 
 ## Out of Scope
 

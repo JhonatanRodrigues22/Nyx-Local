@@ -65,12 +65,12 @@ No operating-system automation, LLM integration, shared memory, shell execution,
 ## Tests Run
 
 - Existing baseline before new tests: 19 passed.
-- Full test suite: 46 passed.
+- Full test suite: 53 passed.
 - `ruff check src tests scripts`: passed.
 - `mypy src scripts main.py`: passed in strict mode.
 - Real Nyx OS Node-to-Python integration: passed.
 
-The real integration started the Nyx OS PR #30 server, launched this Python client, completed handshake and announcement, registered `local.echo`, executed it through the Nyx OS Tool Calling Engine, returned the Python result, disconnected, and cleaned up.
+The real integration started the Nyx OS PR #30 server, launched this Python client, completed handshake and announcement, registered `local.echo`, executed a success through the Nyx OS Tool Calling Engine, then validated a structured Python skill failure with full correlation and protocol-safe error details before disconnecting and cleaning up.
 
 ## Packaging Status
 
@@ -78,7 +78,14 @@ The real integration started the Nyx OS PR #30 server, launched this Python clie
 
 ## Git/PR Status
 
-The supplied ZIP contains no `.git` directory or remote metadata. Branch and Draft PR preparation remain blocked until a real repository checkout or remote URL is provided.
+Repository history is preserved from `main`. Sprint 24 is published on branch `codex/sprint-24-local-communication-client` in Draft PR [#8](https://github.com/JhonatanRodrigues22/Nyx-Local/pull/8); merge remains a human decision.
+
+## Sprint 25 Suggestions
+
+- Define per-skill execution timeout and cooperative cancellation semantics before adding operating-system automation.
+- Evaluate isolated/concurrent execution for long-running skills so future executors cannot delay heartbeat processing.
+
+These suggestions are intentionally not implemented in Sprint 24.
 
 ## Limitations
 
