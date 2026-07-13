@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from math import isfinite
 from typing import TypeGuard, cast
 
 from websockets.asyncio.client import ClientConnection, connect
@@ -55,7 +56,9 @@ class WebSocketGateway(GatewayTransport):
 
 
 def _is_json_value(value: object) -> TypeGuard[JsonValue]:
-    if value is None or isinstance(value, str | int | float | bool):
+    if isinstance(value, float):
+        return isfinite(value)
+    if value is None or isinstance(value, str | int | bool):
         return True
     if isinstance(value, list):
         return all(_is_json_value(item) for item in value)

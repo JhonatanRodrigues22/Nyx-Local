@@ -59,7 +59,17 @@ def test_protocol_rejects_incompatible_version() -> None:
         )
 
 
-def test_command_result_preserves_correlation_and_structured_error() -> None:
+@pytest.mark.parametrize(
+    ("internal_code", "message"),
+    [
+        ("INVALID_SKILL_INPUT", "Structured local input error"),
+        ("SKILL_NOT_FOUND", "Structured missing skill error"),
+    ],
+)
+def test_command_result_maps_internal_error_and_preserves_correlation(
+    internal_code: str,
+    message: str,
+) -> None:
     request = LocalCommandRequest.from_wire(
         {
             "type": "local.command.request",
@@ -74,9 +84,9 @@ def test_command_result_preserves_correlation_and_structured_error() -> None:
         request,
         SkillResult.failed(
             SkillError(
-                code="REMOTE_COMMAND_FAILED",
-                message="Structured local execution error",
-                details={"capabilityId": "local.echo"},
+                code=internal_code,
+                message=message,
+                details={"capabilityId": "local.echo", "nested": {"private": "ignored"}},
             )
         ),
     )
@@ -90,9 +100,12 @@ def test_command_result_preserves_correlation_and_structured_error() -> None:
         "success": False,
         "error": {
             "code": "REMOTE_COMMAND_FAILED",
-            "message": "Structured local execution error",
+            "message": message,
             "retryable": False,
-            "details": {"capabilityId": "local.echo"},
+            "details": {
+                "capabilityId": "local.echo",
+                "internalCode": internal_code,
+            },
         },
     }
 
@@ -112,6 +125,31 @@ def test_protocol_error_parses_structured_error() -> None:
 
     assert envelope.error.code == "AUTHENTICATION_FAILED"
     assert envelope.error.retryable is False
+
+
+@pytest.mark.parametrize(
+    "error",
+    [
+        {"code": "SKILL_NOT_FOUND", "message": "failed", "retryable": False},
+        {"code": "REMOTE_COMMAND_FAILED", "message": 42, "retryable": False},
+        {"code": "REMOTE_COMMAND_FAILED", "message": "failed", "retryable": "no"},
+        {
+            "code": "REMOTE_COMMAND_FAILED",
+            "message": "failed",
+            "retryable": False,
+            "details": [],
+        },
+    ],
+)
+def test_protocol_error_rejects_invalid_network_fields(error: dict[str, object]) -> None:
+    with pytest.raises(ProtocolValidationError):
+        LocalErrorEnvelope.from_wire(
+            {
+                "type": "local.error",
+                "protocolVersion": PROTOCOL_VERSION,
+                "error": error,
+            }
+        )
 
 
 def test_heartbeat_uses_iso_utc_timestamp() -> None:

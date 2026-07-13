@@ -46,3 +46,19 @@ def test_websocket_gateway_rejects_non_object_json() -> None:
             await transport.close()
 
     asyncio.run(scenario())
+
+
+def test_websocket_gateway_rejects_non_finite_json_numbers() -> None:
+    async def scenario() -> None:
+        async def handler(connection: ServerConnection) -> None:
+            await connection.send('{"type":"test","protocolVersion":"1.0","value":NaN}')
+
+        async with serve(handler, "127.0.0.1", 0) as server:
+            port = server.sockets[0].getsockname()[1]
+            transport = WebSocketGateway(f"ws://127.0.0.1:{port}")
+            await transport.connect()
+            with pytest.raises(ProtocolValidationError, match="non-JSON value"):
+                await transport.receive()
+            await transport.close()
+
+    asyncio.run(scenario())

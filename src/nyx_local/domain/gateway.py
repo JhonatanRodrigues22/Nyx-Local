@@ -4,10 +4,44 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from enum import StrEnum
+from math import isfinite
+from typing import Literal, cast
 
 from nyx_local.domain.skills import JsonValue, SkillDescriptor, SkillResult
 
 PROTOCOL_VERSION = "1.0"
+
+type ProtocolErrorCode = Literal[
+    "AUTHENTICATION_FAILED",
+    "INCOMPATIBLE_PROTOCOL_VERSION",
+    "HANDSHAKE_REQUIRED",
+    "INVALID_MESSAGE",
+    "PAYLOAD_TOO_LARGE",
+    "CAPABILITY_NOT_ALLOWED",
+    "INSTANCE_NOT_CONNECTED",
+    "COMMAND_TIMEOUT",
+    "CONNECTION_CLOSED",
+    "GATEWAY_STOPPED",
+    "REMOTE_COMMAND_FAILED",
+]
+type ProtocolDetail = str | int | float | bool | None
+type ProtocolDetails = dict[str, ProtocolDetail]
+
+PROTOCOL_ERROR_CODES: frozenset[str] = frozenset(
+    {
+        "AUTHENTICATION_FAILED",
+        "INCOMPATIBLE_PROTOCOL_VERSION",
+        "HANDSHAKE_REQUIRED",
+        "INVALID_MESSAGE",
+        "PAYLOAD_TOO_LARGE",
+        "CAPABILITY_NOT_ALLOWED",
+        "INSTANCE_NOT_CONNECTED",
+        "COMMAND_TIMEOUT",
+        "CONNECTION_CLOSED",
+        "GATEWAY_STOPPED",
+        "REMOTE_COMMAND_FAILED",
+    }
+)
 
 
 class ConnectionState(StrEnum):
@@ -89,24 +123,33 @@ class LocalCommandRequest:
 
 @dataclass(slots=True, frozen=True)
 class ProtocolError:
-    code: str
+    code: ProtocolErrorCode
     message: str
     retryable: bool
-    details: dict[str, JsonValue] = field(default_factory=dict)
+    details: ProtocolDetails = field(default_factory=dict)
 
     @classmethod
     def from_wire(cls, payload: dict[str, JsonValue]) -> ProtocolError:
-        code = _require_string(payload, "code")
+        raw_code = _require_string(payload, "code")
+        if raw_code not in PROTOCOL_ERROR_CODES:
+            raise ProtocolValidationError(f"unsupported error.code: {raw_code}")
+        code = cast(ProtocolErrorCode, raw_code)
         message = _require_string(payload, "message")
         retryable = payload.get("retryable")
         if not isinstance(retryable, bool):
             raise ProtocolValidationError("error.retryable must be a boolean")
         raw_details = payload.get("details", {})
         if not isinstance(raw_details, dict) or not all(
-            isinstance(key, str) for key in raw_details
+            isinstance(key, str) and _is_protocol_detail(value)
+            for key, value in raw_details.items()
         ):
             raise ProtocolValidationError("error.details must be an object")
-        return cls(code=code, message=message, retryable=retryable, details=raw_details)
+        return cls(
+            code=code,
+            message=message,
+            retryable=retryable,
+            details=cast(ProtocolDetails, raw_details),
+        )
 
     def to_wire(self) -> dict[str, JsonValue]:
         payload: dict[str, JsonValue] = {
@@ -115,7 +158,7 @@ class ProtocolError:
             "retryable": self.retryable,
         }
         if self.details:
-            payload["details"] = self.details
+            payload["details"] = cast(JsonValue, self.details)
         return payload
 
 
@@ -151,11 +194,14 @@ class LocalCommandResult:
     ) -> LocalCommandResult:
         error = None
         if skill_result.error is not None:
+            details = _protocol_details(skill_result.error.details)
+            if skill_result.error.code != "REMOTE_COMMAND_FAILED":
+                details["internalCode"] = skill_result.error.code
             error = ProtocolError(
-                code=skill_result.error.code,
+                code="REMOTE_COMMAND_FAILED",
                 message=skill_result.error.message,
                 retryable=skill_result.error.retryable,
-                details=skill_result.error.details,
+                details=details,
             )
         return cls(
             request_id=request.request_id,
@@ -242,3 +288,17 @@ def _require_string(payload: dict[str, JsonValue], key: str) -> str:
     if not isinstance(value, str) or not value:
         raise ProtocolValidationError(f"{key} must be a non-empty string")
     return value
+
+
+def _is_protocol_detail(value: object) -> bool:
+    if isinstance(value, float):
+        return isfinite(value)
+    return value is None or isinstance(value, str | int | bool)
+
+
+def _protocol_details(details: dict[str, JsonValue]) -> ProtocolDetails:
+    return {
+        key: cast(ProtocolDetail, value)
+        for key, value in details.items()
+        if _is_protocol_detail(value)
+    }
