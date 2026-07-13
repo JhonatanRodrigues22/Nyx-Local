@@ -2,6 +2,6 @@
 
 from nyx_local.core.models import Request, Response
 from nyx_local.core.registry import Registry
-from nyx_local.core.settings import MemorySettings, Settings
+from nyx_local.core.settings import GatewaySettings, MemorySettings, Settings
 
-__all__ = ["MemorySettings", "Registry", "Request", "Response", "Settings"]
+__all__ = ["GatewaySettings", "MemorySettings", "Registry", "Request", "Response", "Settings"]

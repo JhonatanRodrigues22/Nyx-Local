@@ -14,6 +14,8 @@ Nyx Local currently provides the foundation for a modular local application:
 - application Settings;
 - a JSON-backed persistent memory foundation;
 - an Intelligence Pipeline for pre-LLM reasoning;
+- a resident Nyx OS gateway client;
+- a minimal Skill Runtime with `local.echo`;
 - an official `.ai` knowledge base for future collaborators.
 
 ## Goals
@@ -37,6 +39,9 @@ Current implemented capabilities:
 - Application configuration through `Settings`.
 - Persistent key-value memory through `MemoryService` and `JsonMemoryProvider`.
 - Pre-LLM reasoning through `IntelligencePipeline`.
+- WebSocket communication with the Nyx OS local gateway protocol `1.0`.
+- Versioned handshake, capability announcement, heartbeat, command result, and reconnect lifecycle.
+- Minimal local skill registration and protected execution through `SkillService`.
 - AI collaboration documentation in `.ai`.
 
 Not implemented yet:
@@ -46,7 +51,7 @@ Not implemented yet:
 - Obsidian integration.
 - embeddings or vector memory.
 - semantic search.
-- skills or providers beyond the current JSON memory provider.
+- operating-system automation or computer-control skills.
 
 ## Architecture Summary
 
@@ -86,6 +91,15 @@ Input -> Normalizer -> Intent Detection -> Context Builder -> Memory Retrieval
       -> Future LLM -> Response Validator
 ```
 
+Local communication flow:
+
+```text
+Nyx OS Tool Calling Engine -> WebSocketGateway -> GatewayService
+                           -> SkillService -> local.echo
+```
+
+Nyx OS is the brain and Nyx Local is the executor. The Intelligence Pipeline remains separate from gateway command execution.
+
 For the high-level architecture, read `.ai/ARCHITECTURE.md`.
 
 For practical dependency rules and examples, read `.ai/ARCHITECTURE_GUIDE.md`.
@@ -107,12 +121,35 @@ pip install -r requirements-dev.txt
 python main.py
 ```
 
+## Nyx OS Gateway Client
+
+The resident client requires `NYX_LOCAL_GATEWAY_TOKEN` in the process environment. Optional settings are:
+
+- `NYX_LOCAL_GATEWAY_URL` (`ws://127.0.0.1:4789` by default)
+- `NYX_LOCAL_INSTANCE_ID` (stable hostname-based fallback)
+- `NYX_LOCAL_HEARTBEAT_INTERVAL_SECONDS` (`10` by default)
+- `NYX_LOCAL_RECONNECT_MAX_SECONDS` (`30` by default)
+
+After configuring the token outside source control, run:
+
+```powershell
+nyx-local-gateway
+```
+
+The gateway binds only to a loopback Nyx OS server. No token value is stored or logged by the project.
+
 ## Tests and Checks
 
 ```powershell
 pytest
 ruff check .
 mypy src scripts main.py
+```
+
+Real integration against a Nyx OS checkout containing PR #30:
+
+```powershell
+python scripts/verify_nyx_os_integration.py --nyx-os C:\path\to\Nyx-OS
 ```
 
 ## Packaging
@@ -141,6 +178,7 @@ dist/nyx_local_project.zip
 - `src/nyx_local/core/pipeline/`: intelligence pipeline models, stages, and execution flow.
 - `src/nyx_local/domain/`: contracts and domain models.
 - `src/nyx_local/infrastructure/`: concrete adapter implementations.
+- `src/nyx_local/skills/`: approved concrete local skills.
 - `src/nyx_local/interfaces/`: input and output boundaries.
 - `src/nyx_local/services/`: application service boundaries.
 - `tests/`: automated tests.
@@ -165,6 +203,7 @@ Useful references:
 - `.ai/REVIEW_CHECKLIST.md`
 - `.ai/ADR.md`
 - `.ai/ROADMAP.md`
+- `docs/architecture/LOCAL_COMMUNICATION_CLIENT.md`
 
 ## Git / Pull Request Flow
 
@@ -189,9 +228,10 @@ Completed:
 - Bootstrap and application infrastructure;
 - JSON-backed memory foundation;
 - Intelligence Pipeline foundation;
+- Nyx OS local gateway client and minimal Skill Runtime;
 - AI development documentation.
 
-Future work may include richer local memory providers, user-facing interfaces, skills, providers, and AI integration, only when approved by future Sprints.
+Future work may include approved operating-system skills, richer local memory providers, user-facing interfaces, providers, and AI integration, only when approved by future Sprints.
 
 ## Contributing
 

@@ -157,6 +157,16 @@ LLMs answer "how to write".
 
 Do not put concrete skill execution, external API calls, or provider-specific logic directly inside pipeline stages.
 
+## Local Gateway Rule
+
+- Protocol and transport contracts belong in `domain`.
+- WebSocket implementation belongs in `infrastructure`.
+- Connection lifecycle and command dispatch belong in `services`.
+- Concrete skills belong in `skills` and are registered by Bootstrap.
+- The gateway may call `SkillService`; it must not call the Intelligence Pipeline.
+- The SkillRegistry is dedicated to skills and does not replace the core component Registry.
+- Operating-system automation requires a later approved Sprint.
+
 ## Import Cycle Rule
 
 If adding a package-level export creates an import cycle, prefer explicit module imports.

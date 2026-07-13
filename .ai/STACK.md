@@ -6,7 +6,7 @@ Python 3.13+
 
 ## Runtime Dependencies
 
-No runtime dependencies are currently required.
+- websockets 15.0.1
 
 ## Development Dependencies
 
