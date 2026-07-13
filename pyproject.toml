@@ -8,7 +8,9 @@ version = "0.1.0"
 description = "Local-first modular foundation for Nyx Local."
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "websockets==15.0.1",
+]
 
 [project.optional-dependencies]
 dev = [
@@ -19,6 +21,7 @@ dev = [
 
 [project.scripts]
 nyx-local = "nyx_local.main:main"
+nyx-local-gateway = "nyx_local.gateway_main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
