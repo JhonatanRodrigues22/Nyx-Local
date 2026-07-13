@@ -134,14 +134,25 @@ class GatewayService:
         )
 
         heartbeat_task = asyncio.create_task(self._heartbeat_loop())
+        receive_task = asyncio.create_task(self._receive_loop())
         try:
-            while not self._stop_event.is_set():
-                payload = await self._transport.receive()
-                await self._handle_message(payload)
+            done, _ = await asyncio.wait(
+                {heartbeat_task, receive_task},
+                return_when=asyncio.FIRST_COMPLETED,
+            )
+            for task in done:
+                task.result()
         finally:
-            heartbeat_task.cancel()
-            with suppress(asyncio.CancelledError):
-                await heartbeat_task
+            for task in (heartbeat_task, receive_task):
+                task.cancel()
+            for task in (heartbeat_task, receive_task):
+                with suppress(asyncio.CancelledError):
+                    await task
+
+    async def _receive_loop(self) -> None:
+        while not self._stop_event.is_set():
+            payload = await self._transport.receive()
+            await self._handle_message(payload)
 
     async def _handle_message(self, payload: dict[str, JsonValue]) -> None:
         message_type = parse_message_type(payload)

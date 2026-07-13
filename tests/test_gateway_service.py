@@ -13,7 +13,13 @@ from nyx_local.skills import LocalEchoSkill
 
 
 class FakeTransport(GatewayTransport):
-    def __init__(self, incoming: list[dict[str, JsonValue]], *, connect_failures: int = 0) -> None:
+    def __init__(
+        self,
+        incoming: list[dict[str, JsonValue]],
+        *,
+        connect_failures: int = 0,
+        fail_first_heartbeat: bool = False,
+    ) -> None:
         self.incoming: asyncio.Queue[dict[str, JsonValue] | Exception] = asyncio.Queue()
         for message in incoming:
             self.incoming.put_nowait(message)
@@ -21,6 +27,7 @@ class FakeTransport(GatewayTransport):
         self.connect_failures = connect_failures
         self.connect_count = 0
         self.connected = False
+        self.fail_first_heartbeat = fail_first_heartbeat
 
     async def connect(self) -> None:
         self.connect_count += 1
@@ -31,6 +38,9 @@ class FakeTransport(GatewayTransport):
     async def send(self, payload: dict[str, JsonValue]) -> None:
         if not self.connected:
             raise ConnectionError("not connected")
+        if payload.get("type") == "local.heartbeat" and self.fail_first_heartbeat:
+            self.fail_first_heartbeat = False
+            raise ConnectionError("heartbeat send failed")
         self.sent.append(payload)
 
     async def receive(self) -> dict[str, JsonValue]:
@@ -193,5 +203,30 @@ def test_gateway_reconnects_with_backoff_after_transport_failure() -> None:
         await task
 
         assert transport.connect_count == 3
+
+    asyncio.run(scenario())
+
+
+def test_gateway_reconnects_when_heartbeat_fails_without_orphaning_receive() -> None:
+    async def scenario() -> None:
+        transport = FakeTransport(
+            [
+                {
+                    "type": "local.handshake.accepted",
+                    "protocolVersion": "1.0",
+                    "instanceId": "stable-instance",
+                }
+            ],
+            fail_first_heartbeat=True,
+        )
+        service = create_service(transport, heartbeat_interval=0.005)
+        task = asyncio.create_task(service.run())
+
+        await wait_for(lambda: transport.connect_count >= 2)
+        await service.shutdown()
+        await asyncio.wait_for(task, timeout=0.1)
+
+        assert task.done()
+        assert service.state.value == "stopped"
 
     asyncio.run(scenario())
