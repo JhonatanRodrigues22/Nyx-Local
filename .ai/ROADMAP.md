@@ -40,8 +40,12 @@ Documentation quality pass to consolidate responsibilities, navigation, style, R
 
 Stage-based pre-LLM reasoning pipeline with context, result, stages, prompt composition, and response validation.
 
+## Sprint 24 - Nyx Local Communication Client
+
+WebSocket client compatible with the Nyx OS local gateway protocol 1.0, minimal Skill Runtime, `local.echo`, heartbeat, reconnect, command dispatch, and clean resident lifecycle. Operating-system automation remains out of scope.
+
 ## Next
 
 Await Tech Leader direction for the next capability Sprint.
 
-Future work may include richer local memory providers, user-facing interfaces, skills, providers, and AI integration only when approved by future Sprints.
+Future work may include approved operating-system skills, richer local memory providers, user-facing interfaces, providers, and AI integration only when approved by future Sprints.

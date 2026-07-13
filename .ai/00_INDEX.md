@@ -43,6 +43,7 @@ Use this folder as the source of truth for architecture, workflow, development s
 ## External Architecture Documents
 
 - `docs/architecture/INTELLIGENCE_ARCHITECTURE.md`: detailed Intelligence Pipeline architecture.
+- `docs/architecture/LOCAL_COMMUNICATION_CLIENT.md`: Nyx OS gateway client, protocol, skills, and resident lifecycle.
 
 ## Navigation Rule
 

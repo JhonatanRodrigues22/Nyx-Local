@@ -52,6 +52,14 @@ Bootstrap owns concrete wiring:
 - creates `App`;
 - registers components.
 
+The resident local communication flow is separate from request handling:
+
+```text
+Nyx OS -> WebSocketGateway -> GatewayService -> SkillService -> SkillRegistry -> local.echo
+```
+
+Nyx OS is the brain and Tool Calling owner. Nyx Local is the executor. The gateway does not call the Intelligence Pipeline.
+
 ## Memory Flow
 
 The current memory flow is:
@@ -110,4 +118,6 @@ Detailed documentation lives in `docs/architecture/INTELLIGENCE_ARCHITECTURE.md`
 - Settings dataclass.
 - JSON-backed persistent memory foundation.
 - Intelligence Pipeline foundation.
+- Nyx OS WebSocket gateway client.
+- Minimal Skill Runtime with `local.echo`.
 - AI collaboration documentation.

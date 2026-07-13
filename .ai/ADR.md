@@ -73,3 +73,13 @@ Decision: Nyx Local uses a stage-based Intelligence Pipeline in `core/pipeline` 
 Reason: The project needs a modular place for normalization, intent detection, context building, retrieval, planning, prompt composition, and response validation without giving the future LLM ownership of application logic.
 
 Consequence: Pipeline stages must remain focused on reasoning preparation. Skills and concrete execution logic must stay outside the Pipeline.
+
+## ADR-0010: WebSocket Gateway Client and Minimal Skill Runtime
+
+Status: Accepted
+
+Decision: Nyx Local uses a resident WebSocket client with versioned JSON envelopes to connect to the Nyx OS local gateway. A dedicated minimal `SkillRegistry` and `SkillService` expose only approved `local.*` and `computer.*` capabilities, beginning with `local.echo`.
+
+Reason: Nyx OS needs a stable local executor boundary without coupling transport to concrete skills or connecting the frozen Intelligence Pipeline to execution.
+
+Consequence: Bootstrap owns concrete wiring, Infrastructure implements the Domain transport contract, `nyx-local-gateway` owns asynchronous lifecycle, and the existing synchronous entrypoint remains unchanged.
