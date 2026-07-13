@@ -15,9 +15,14 @@ from nyx_local.core.pipeline.stages import (
 )
 from nyx_local.core.registry import Registry
 from nyx_local.core.settings import Settings
+from nyx_local.domain.skills import SkillRegistry
 from nyx_local.infrastructure.memory_json import JsonMemoryProvider
+from nyx_local.infrastructure.websocket_gateway import WebSocketGateway
 from nyx_local.interfaces import ConsoleInterface
+from nyx_local.services.gateway_service import GatewayService
 from nyx_local.services.memory_service import MemoryService
+from nyx_local.services.skill_service import SkillService
+from nyx_local.skills import LocalEchoSkill
 
 
 class Bootstrap:
@@ -28,8 +33,8 @@ class Bootstrap:
         self.registry: Registry | None = None
         self.app: App | None = None
 
-    def initialize(self) -> App:
-        settings = Settings()
+    def initialize(self, settings: Settings | None = None) -> App:
+        settings = settings or Settings()
         registry = Registry()
         memory_provider = JsonMemoryProvider(settings.memory.path)
         memory_service = MemoryService(memory_provider)
@@ -50,6 +55,16 @@ class Bootstrap:
             intelligence_pipeline=intelligence_pipeline,
         )
         console = ConsoleInterface()
+        skill_registry = SkillRegistry()
+        skill_registry.register(LocalEchoSkill())
+        skill_service = SkillService(skill_registry)
+        gateway_transport = WebSocketGateway(settings.gateway.url)
+        gateway_service = GatewayService(
+            settings=settings,
+            transport=gateway_transport,
+            skill_registry=skill_registry,
+            skill_service=skill_service,
+        )
 
         app = App(
             application=application,
@@ -64,6 +79,10 @@ class Bootstrap:
         registry.register("intelligence_pipeline", intelligence_pipeline)
         registry.register("application", application)
         registry.register("console", console)
+        registry.register("skill_registry", skill_registry)
+        registry.register("skill_service", skill_service)
+        registry.register("gateway_transport", gateway_transport)
+        registry.register("gateway_service", gateway_service)
         registry.register("app", app)
 
         self.settings = settings
