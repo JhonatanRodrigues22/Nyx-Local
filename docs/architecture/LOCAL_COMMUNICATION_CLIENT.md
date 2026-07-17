@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Nyx Local is the local executor for Nyx OS. Sprint 24 adds a resident WebSocket client that connects to the Nyx OS local gateway and exposes a minimal technical skill, `local.echo`.
+Nyx Local is the local executor for Nyx OS. Sprint 24 adds a resident WebSocket client that connects to the Nyx OS local gateway and exposes a minimal technical skill, `local.echo`. Sprint 25 keeps protocol `1.0` and adds the first read-only computer observation skill, `computer.process.list`.
 
 Nyx OS remains the brain and owns Tool Calling. Nyx Local owns local execution. The Intelligence Pipeline is not connected to the gateway in this Sprint.
 
@@ -14,7 +14,7 @@ Nyx OS Tool Calling Engine
     -> GatewayService
     -> SkillService
     -> SkillRegistry
-    -> local.echo
+    -> local.echo / computer.process.list
     -> WebSocket local.command.result
 ```
 
@@ -47,7 +47,9 @@ Authentication and incompatible-protocol errors marked non-retryable stop the re
 - `services/skill_service.py`: safe skill resolution and execution.
 - `services/gateway_service.py`: protocol and connection lifecycle orchestration.
 - `infrastructure/websocket_gateway.py`: concrete JSON-over-WebSocket adapter.
+- `infrastructure/process_provider.py`: `psutil` adapter that omits inaccessible processes.
 - `skills/local_echo.py`: technical echo skill.
+- `skills/computer_process_list.py`: read-only process list skill.
 - `core/settings.py`: environment-backed gateway configuration.
 - `core/bootstrap.py`: concrete dependency wiring.
 - `gateway_main.py`: resident entrypoint.
@@ -82,6 +84,18 @@ and returns:
 
 Invalid input, unknown skills, and execution exceptions become structured results. Skill exceptions never escape to the gateway lifecycle.
 
+`computer.process.list` accepts optional input:
+
+```json
+{"limit": 200}
+```
+
+The skill returns only `pid`, `name`, and `status`, plus `count`, `limit`, and `truncated`.
+It never returns command lines, current working directories, environment variables, executable
+paths, or process arguments. The default and maximum limit is `200`; values above `200` are
+capped, and non-integer or non-positive values return structured `INVALID_SKILL_INPUT`.
+Individual inaccessible processes are omitted so one denied process cannot fail the whole list.
+
 `SKILL_NOT_FOUND` and `INVALID_SKILL_INPUT` are internal Skill Runtime reasons, not protocol 1.0 error codes. At the network boundary they are mapped to `REMOTE_COMMAND_FAILED`; the original reason is retained in `error.details.internalCode`, together with safe primitive details. Incoming structured errors validate `code`, `message`, `retryable`, and `details` at runtime.
 
 ## Validation
@@ -107,8 +121,9 @@ GitHub Actions runs `pytest`, Ruff, and strict mypy checks for pull requests and
 
 ## Out of Scope
 
-- Windows or operating-system automation.
-- Process, application, mouse, keyboard, clipboard, screenshot, OCR, shell, or PowerShell execution.
+- Windows or operating-system automation beyond read-only process observation.
+- Application, mouse, keyboard, clipboard, screenshot, OCR, shell, or PowerShell execution.
+- Process control, process killing, process pausing, or command-line exposure.
 - Intelligence Pipeline integration.
 - LLM, prompts, or intent handling.
 - Shared memory.
