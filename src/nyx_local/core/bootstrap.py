@@ -17,12 +17,13 @@ from nyx_local.core.registry import Registry
 from nyx_local.core.settings import Settings
 from nyx_local.domain.skills import SkillRegistry
 from nyx_local.infrastructure.memory_json import JsonMemoryProvider
+from nyx_local.infrastructure.process_provider import PsutilProcessProvider
 from nyx_local.infrastructure.websocket_gateway import WebSocketGateway
 from nyx_local.interfaces import ConsoleInterface
 from nyx_local.services.gateway_service import GatewayService
 from nyx_local.services.memory_service import MemoryService
 from nyx_local.services.skill_service import SkillService
-from nyx_local.skills import LocalEchoSkill
+from nyx_local.skills import ComputerProcessListSkill, LocalEchoSkill
 
 
 class Bootstrap:
@@ -56,7 +57,9 @@ class Bootstrap:
         )
         console = ConsoleInterface()
         skill_registry = SkillRegistry()
+        process_provider = PsutilProcessProvider()
         skill_registry.register(LocalEchoSkill())
+        skill_registry.register(ComputerProcessListSkill(process_provider))
         skill_service = SkillService(skill_registry)
         gateway_transport = WebSocketGateway(settings.gateway.url)
         gateway_service = GatewayService(
@@ -79,6 +82,7 @@ class Bootstrap:
         registry.register("intelligence_pipeline", intelligence_pipeline)
         registry.register("application", application)
         registry.register("console", console)
+        registry.register("process_provider", process_provider)
         registry.register("skill_registry", skill_registry)
         registry.register("skill_service", skill_service)
         registry.register("gateway_transport", gateway_transport)

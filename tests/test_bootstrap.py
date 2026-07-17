@@ -21,6 +21,10 @@ def test_bootstrap_initializes_application_components() -> None:
     assert isinstance(bootstrap.registry.get("intelligence_pipeline"), IntelligencePipeline)
     assert isinstance(bootstrap.registry.get("skill_service"), SkillService)
     assert isinstance(bootstrap.registry.get("gateway_service"), GatewayService)
+    assert sorted(
+        descriptor.id
+        for descriptor in bootstrap.registry.get("skill_registry").list_descriptors()
+    ) == ["computer.process.list", "local.echo"]
     assert app.application.memory_service is bootstrap.registry.get("memory_service")
     assert app.application.intelligence_pipeline is bootstrap.registry.get("intelligence_pipeline")
 
