@@ -1,6 +1,11 @@
 import psutil
 import pytest
 
+from nyx_local.domain.applications import (
+    APPLICATION_ALLOWLIST,
+    ApplicationOpenFailure,
+    ApplicationOpenSpec,
+)
 from nyx_local.domain.processes import ProcessInfo
 from nyx_local.domain.skills import (
     JsonValue,
@@ -9,9 +14,21 @@ from nyx_local.domain.skills import (
     SkillRegistry,
     SkillResult,
 )
+from nyx_local.infrastructure.application_provider import SubprocessApplicationProvider
 from nyx_local.infrastructure.process_provider import PsutilProcessProvider
 from nyx_local.services.skill_service import SkillService
-from nyx_local.skills import ComputerProcessListSkill, LocalEchoSkill
+from nyx_local.skills import ComputerApplicationOpenSkill, ComputerProcessListSkill, LocalEchoSkill
+
+
+class FakeApplicationProvider:
+    def __init__(self, *, fail: bool = False) -> None:
+        self.fail = fail
+        self.opened_specs: list[ApplicationOpenSpec] = []
+
+    def open_application(self, spec: ApplicationOpenSpec) -> None:
+        self.opened_specs.append(spec)
+        if self.fail:
+            raise ApplicationOpenFailure
 
 
 class FakeProcessProvider:
@@ -182,6 +199,133 @@ def test_computer_process_list_rejects_invalid_input(input_value: JsonValue) -> 
     assert result.success is False
     assert result.error is not None
     assert result.error.code == "INVALID_SKILL_INPUT"
+
+
+@pytest.mark.parametrize("app", ["vscode", "file-explorer", "notepad"])
+def test_computer_application_open_opens_allowlisted_apps(app: str) -> None:
+    provider = FakeApplicationProvider()
+
+    result = ComputerApplicationOpenSkill(provider).execute({"app": app})
+
+    assert result.success is True
+    assert result.result == {"app": app, "opened": True}
+    assert provider.opened_specs == [APPLICATION_ALLOWLIST[app]]
+
+
+def test_computer_application_open_rejects_unknown_app() -> None:
+    provider = FakeApplicationProvider()
+
+    result = ComputerApplicationOpenSkill(provider).execute({"app": "unknown-app"})
+
+    assert result.success is False
+    assert result.error is not None
+    assert result.error.code == "APP_NOT_ALLOWED"
+    assert result.error.message == "Application is not in the allowlist."
+    assert result.error.details == {
+        "capabilityId": "computer.application.open",
+        "app": "unknown-app",
+        "opened": False,
+    }
+    assert provider.opened_specs == []
+
+
+@pytest.mark.parametrize(
+    "input_value",
+    [None, "notepad", {}, {"app": ""}, {"app": None}, {"app": 1}, {"app": []}],
+)
+def test_computer_application_open_rejects_invalid_input(input_value: JsonValue) -> None:
+    result = ComputerApplicationOpenSkill(FakeApplicationProvider()).execute(input_value)
+
+    assert result.success is False
+    assert result.error is not None
+    assert result.error.code == "INVALID_SKILL_INPUT"
+
+
+def test_computer_application_open_converts_open_failure_to_structured_error() -> None:
+    result = ComputerApplicationOpenSkill(FakeApplicationProvider(fail=True)).execute(
+        {"app": "notepad"}
+    )
+
+    assert result.success is False
+    assert result.error is not None
+    assert result.error.code == "APP_OPEN_FAILED"
+    assert result.error.message == "Application could not be opened."
+    assert result.error.details == {
+        "capabilityId": "computer.application.open",
+        "app": "notepad",
+        "opened": False,
+    }
+
+
+def test_computer_application_open_ignores_arbitrary_execution_fields() -> None:
+    provider = FakeApplicationProvider()
+
+    result = ComputerApplicationOpenSkill(provider).execute(
+        {
+            "app": "notepad",
+            "path": "C:/unsafe/tool.exe",
+            "command": "powershell",
+            "args": ["-EncodedCommand", "secret"],
+            "arguments": "--unsafe",
+            "cwd": "C:/unsafe",
+            "shell": True,
+        }
+    )
+
+    assert result.success is True
+    assert provider.opened_specs == [APPLICATION_ALLOWLIST["notepad"]]
+    assert provider.opened_specs[0].command == "notepad.exe"
+    assert "C:/unsafe/tool.exe" not in str(result.result)
+    assert "powershell" not in str(result.result)
+    assert "secret" not in str(result.result)
+
+
+def test_application_open_errors_do_not_expose_command_or_sensitive_details() -> None:
+    result = ComputerApplicationOpenSkill(FakeApplicationProvider(fail=True)).execute(
+        {
+            "app": "vscode",
+            "path": "C:/secret/tool.exe",
+            "command": "powershell",
+            "args": ["token"],
+        }
+    )
+
+    assert result.success is False
+    assert result.error is not None
+    assert "code" not in result.error.message
+    assert "powershell" not in result.error.message
+    assert "token" not in result.error.message
+    assert "C:/secret/tool.exe" not in result.error.message
+    assert result.error.details == {
+        "capabilityId": "computer.application.open",
+        "app": "vscode",
+        "opened": False,
+    }
+
+
+def test_subprocess_application_provider_uses_allowlisted_command_without_shell(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[dict[str, object]] = []
+
+    class FakePopen:
+        def __init__(self, command: list[str], **kwargs: object) -> None:
+            calls.append({"command": command, **kwargs})
+
+    monkeypatch.setattr("subprocess.Popen", FakePopen)
+
+    SubprocessApplicationProvider().open_application(APPLICATION_ALLOWLIST["notepad"])
+
+    assert calls == [
+        {
+            "command": ["notepad.exe"],
+            "stdin": -3,
+            "stdout": -3,
+            "stderr": -3,
+            "shell": False,
+            "close_fds": True,
+        }
+    ]
 
 
 def test_psutil_process_provider_omits_inaccessible_processes(
