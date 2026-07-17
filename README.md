@@ -42,6 +42,7 @@ Current implemented capabilities:
 - WebSocket communication with the Nyx OS local gateway protocol `1.0`.
 - Versioned handshake, capability announcement, heartbeat, command result, and reconnect lifecycle.
 - Minimal local skill registration and protected execution through `SkillService`.
+- Safe read-only process listing through `computer.process.list`.
 - AI collaboration documentation in `.ai`.
 
 Not implemented yet:
@@ -51,7 +52,7 @@ Not implemented yet:
 - Obsidian integration.
 - embeddings or vector memory.
 - semantic search.
-- operating-system automation or computer-control skills.
+- operating-system automation or computer-control skills beyond read-only observation.
 
 ## Architecture Summary
 
@@ -138,6 +139,15 @@ nyx-local-gateway
 
 The gateway binds only to a loopback Nyx OS server. No token value is stored or logged by the project.
 
+Current announced local capabilities:
+
+- `local.echo`: technical round-trip validation.
+- `computer.process.list`: read-only process summary with `pid`, `name`, and `status` only.
+
+`computer.process.list` intentionally does not expose command lines, current directories,
+environment variables, executable paths, or process arguments. Its default and maximum limit
+is `200`; higher requested limits are capped.
+
 ## Tests and Checks
 
 ```powershell
@@ -204,6 +214,7 @@ Useful references:
 - `.ai/ADR.md`
 - `.ai/ROADMAP.md`
 - `docs/architecture/LOCAL_COMMUNICATION_CLIENT.md`
+- `docs/architecture/COMPUTER_PROCESS_LIST.md`
 
 ## Git / Pull Request Flow
 
@@ -229,6 +240,7 @@ Completed:
 - JSON-backed memory foundation;
 - Intelligence Pipeline foundation;
 - Nyx OS local gateway client and minimal Skill Runtime;
+- read-only process listing through `computer.process.list`;
 - AI development documentation.
 
 Future work may include approved operating-system skills, richer local memory providers, user-facing interfaces, providers, and AI integration, only when approved by future Sprints.
