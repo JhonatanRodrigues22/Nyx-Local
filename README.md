@@ -43,6 +43,7 @@ Current implemented capabilities:
 - Versioned handshake, capability announcement, heartbeat, command result, and reconnect lifecycle.
 - Minimal local skill registration and protected execution through `SkillService`.
 - Safe read-only process listing through `computer.process.list`.
+- Allowlisted application opening through `computer.application.open`.
 - AI collaboration documentation in `.ai`.
 
 Not implemented yet:
@@ -143,10 +144,15 @@ Current announced local capabilities:
 
 - `local.echo`: technical round-trip validation.
 - `computer.process.list`: read-only process summary with `pid`, `name`, and `status` only.
+- `computer.application.open`: opens a hardcoded allowlist of local applications by symbolic name.
 
 `computer.process.list` intentionally does not expose command lines, current directories,
 environment variables, executable paths, or process arguments. Its default and maximum limit
 is `200`; higher requested limits are capped.
+
+`computer.application.open` accepts only the symbolic names `vscode`, `file-explorer`, and
+`notepad`. It never accepts executable paths, shell commands, working directories, or free
+arguments from input.
 
 ## Tests and Checks
 
@@ -215,6 +221,7 @@ Useful references:
 - `.ai/ROADMAP.md`
 - `docs/architecture/LOCAL_COMMUNICATION_CLIENT.md`
 - `docs/architecture/COMPUTER_PROCESS_LIST.md`
+- `docs/architecture/COMPUTER_APPLICATION_OPEN.md`
 
 ## Git / Pull Request Flow
 
@@ -241,6 +248,7 @@ Completed:
 - Intelligence Pipeline foundation;
 - Nyx OS local gateway client and minimal Skill Runtime;
 - read-only process listing through `computer.process.list`;
+- allowlisted application opening through `computer.application.open`;
 - AI development documentation.
 
 Future work may include approved operating-system skills, richer local memory providers, user-facing interfaces, providers, and AI integration, only when approved by future Sprints.
