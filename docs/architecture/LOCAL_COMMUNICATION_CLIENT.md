@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Nyx Local is the local executor for Nyx OS. Sprint 24 adds a resident WebSocket client that connects to the Nyx OS local gateway and exposes a minimal technical skill, `local.echo`. Sprint 25 keeps protocol `1.0` and adds the first read-only computer observation skill, `computer.process.list`.
+Nyx Local is the local executor for Nyx OS. Sprint 24 adds a resident WebSocket client that connects to the Nyx OS local gateway and exposes a minimal technical skill, `local.echo`. Sprint 25 keeps protocol `1.0` and adds the first read-only computer observation skill, `computer.process.list`. Sprint 26 adds the first controlled write/action capability, `computer.application.open`, behind a hardcoded symbolic allowlist.
 
 Nyx OS remains the brain and owns Tool Calling. Nyx Local owns local execution. The Intelligence Pipeline is not connected to the gateway in this Sprint.
 
@@ -14,7 +14,7 @@ Nyx OS Tool Calling Engine
     -> GatewayService
     -> SkillService
     -> SkillRegistry
-    -> local.echo / computer.process.list
+    -> local.echo / computer.process.list / computer.application.open
     -> WebSocket local.command.result
 ```
 
@@ -48,8 +48,10 @@ Authentication and incompatible-protocol errors marked non-retryable stop the re
 - `services/gateway_service.py`: protocol and connection lifecycle orchestration.
 - `infrastructure/websocket_gateway.py`: concrete JSON-over-WebSocket adapter.
 - `infrastructure/process_provider.py`: `psutil` adapter that omits inaccessible processes.
+- `infrastructure/application_provider.py`: subprocess adapter that opens allowlisted specs with `shell=False`.
 - `skills/local_echo.py`: technical echo skill.
 - `skills/computer_process_list.py`: read-only process list skill.
+- `skills/computer_application_open.py`: symbolic allowlist application open skill.
 - `core/settings.py`: environment-backed gateway configuration.
 - `core/bootstrap.py`: concrete dependency wiring.
 - `gateway_main.py`: resident entrypoint.
@@ -96,6 +98,17 @@ paths, or process arguments. The default and maximum limit is `200`; values abov
 capped, and non-integer or non-positive values return structured `INVALID_SKILL_INPUT`.
 Individual inaccessible processes are omitted so one denied process cannot fail the whole list.
 
+`computer.application.open` accepts:
+
+```json
+{"app": "notepad"}
+```
+
+The allowed symbolic names are `vscode`, `file-explorer`, and `notepad`. The skill never
+accepts executable paths, arbitrary commands, shell flags, current working directories, or
+free arguments from input. Unknown names return structured `APP_NOT_ALLOWED`. Provider
+failures return structured `APP_OPEN_FAILED`.
+
 `SKILL_NOT_FOUND` and `INVALID_SKILL_INPUT` are internal Skill Runtime reasons, not protocol 1.0 error codes. At the network boundary they are mapped to `REMOTE_COMMAND_FAILED`; the original reason is retained in `error.details.internalCode`, together with safe primitive details. Incoming structured errors validate `code`, `message`, `retryable`, and `details` at runtime.
 
 ## Validation
@@ -121,9 +134,10 @@ GitHub Actions runs `pytest`, Ruff, and strict mypy checks for pull requests and
 
 ## Out of Scope
 
-- Windows or operating-system automation beyond read-only process observation.
+- Windows or operating-system automation beyond read-only process observation and approved app opening.
 - Application, mouse, keyboard, clipboard, screenshot, OCR, shell, or PowerShell execution.
 - Process control, process killing, process pausing, or command-line exposure.
+- Dynamic runtime allowlists or user-provided executable paths.
 - Intelligence Pipeline integration.
 - LLM, prompts, or intent handling.
 - Shared memory.

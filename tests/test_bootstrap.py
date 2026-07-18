@@ -24,7 +24,7 @@ def test_bootstrap_initializes_application_components() -> None:
     assert sorted(
         descriptor.id
         for descriptor in bootstrap.registry.get("skill_registry").list_descriptors()
-    ) == ["computer.process.list", "local.echo"]
+    ) == ["computer.application.open", "computer.process.list", "local.echo"]
     assert app.application.memory_service is bootstrap.registry.get("memory_service")
     assert app.application.intelligence_pipeline is bootstrap.registry.get("intelligence_pipeline")
 
